@@ -1,0 +1,18 @@
+RoundTime: 300
+DifficultyMin: 1
+DifficultyMax: 10
+BlockCountMin: 70
+BlockCountMax: 100
+Cycle: 3
+canBuilderPlacePoint1: {}
+canBuilderPlacePoint2: {}
+BuilderSpawnPoint:
+  world: world
+  x: 0
+  y: 0
+  z: 0
+  yaw: 0
+  pitch: 0
+AllowAllGenre: true
+AllowGenre:
+  - "未設定"

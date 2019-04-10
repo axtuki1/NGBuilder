@@ -1,0 +1,13 @@
+name: NGBuilder
+version: ${project.version}
+main: io.github.axtuki1.ngbuilder.NGBuilder
+permissions:
+  Builder.GameMaster:
+    default: op
+  Builder.Player:
+    default: true
+commands:
+  builder:
+    permission: Builder.GameMaster
+  clean:
+    permission: Builder.Player
