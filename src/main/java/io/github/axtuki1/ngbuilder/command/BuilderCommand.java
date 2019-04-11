@@ -34,6 +34,9 @@ public class BuilderCommand implements TabExecutor {
         if( args.length == 0 ){
             sendCmdHelp((Player)sender);
         } else if( args[0].equalsIgnoreCase("start") ){
+            if( GameStatus.getStatus().equals(GameStatus.End) ){
+                NGBuilder.init();
+            }
             if( !GameStatus.getStatus().equals(GameStatus.Ready) ){
                 sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "待機状態ではありません。/builder initで初期化を行って下さい。");
                 return true;

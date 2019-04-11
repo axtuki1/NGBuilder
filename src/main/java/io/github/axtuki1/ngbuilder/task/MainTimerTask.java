@@ -168,7 +168,7 @@ public class MainTimerTask extends BaseTimerTask {
             builderPlayerData.getPlayer().sendMessage("   " + ChatColor.GOLD + ChatColor.BOLD.toString() + "NGBonusあり！ x" + currentNGData.getBonus());
         }
         if( currentNGData.getDescription() != null ){
-            Bukkit.broadcastMessage("   "+currentNGData.getDescription());
+            builderPlayerData.getPlayer().sendMessage("   "+currentNGData.getDescription());
         }
         Bukkit.broadcastMessage("");
         Bukkit.broadcastMessage(ChatColor.RED +"============================================================");
