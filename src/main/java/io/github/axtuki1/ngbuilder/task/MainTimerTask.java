@@ -80,7 +80,7 @@ public class MainTimerTask extends BaseTimerTask {
         builderPlayerData.setBuilder(true);
         GamePlayers.setData(builderPlayerData.getUUID(), builderPlayerData);
 
-
+        GameConfig.ThemeDataList.reload();
 
         //お題の選出
         if( GameConfig.AllowAllGenre.getBoolean() ){
