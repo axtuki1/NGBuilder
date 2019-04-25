@@ -290,6 +290,7 @@ public class MainTimerTask extends BaseTimerTask {
             for( Player p : Bukkit.getOnlinePlayers() ){
                 p.sendTitle(ChatColor.GOLD + "残り 1分！" , "", 10, 40, 10);
             }
+            Bukkit.broadcastMessage(NGBuilder.getPrefix() + ChatColor.GOLD + "残り 1分！");
             Utility.playSoundToAllPlayer(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             new BukkitRunnable() {
                 @Override
