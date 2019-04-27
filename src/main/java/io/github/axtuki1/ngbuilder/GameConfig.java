@@ -236,6 +236,27 @@ public enum GameConfig {
             return false;
         }
     },
+    WorldSpawnPoint{
+        @Override
+        public String getName() {
+            return "スポーンポイント";
+        }
+
+        @Override
+        public String getValue() {
+            return null;
+        }
+
+        @Override
+        public boolean isLocation() {
+            return true;
+        }
+
+        @Override
+        public boolean canCommandChange() {
+            return false;
+        }
+    },
     BuilderSpawnPoint{
         @Override
         public String getName() {

@@ -34,6 +34,7 @@ public class BuilderCommand implements TabExecutor {
             } else {
                 sendCmdHelp((Player)sender);
             }
+            return true;
         }
         if( sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
             if( args[0].equalsIgnoreCase("start") ){
@@ -75,32 +76,46 @@ public class BuilderCommand implements TabExecutor {
                 BlockData bd = new BlockData(Utility.getItemInHand(((Player)sender)));
                 sender.sendMessage( bd.getMaterial().toString() + ":" + bd.getDataValue() + " -> " + NGData.NetherAndEndOnly.canUse(bd));
             } else if(args[0].equalsIgnoreCase("loc")) {
-                if( GamePlayers.getSettingPlayers().contains( ((Player)sender).getUniqueId() ) ){
-                    sender.sendMessage( NGBuilder.getPrefix() + "座標編集モードを終了しました。" );
-                    GamePlayers.removeSettingPlayer( ((Player)sender).getUniqueId() );
+                if (args.length == 2) {
+                    Player p = (Player)sender;
+                    if( args[1].equalsIgnoreCase("tp") ){
+                        GameConfig.BuilderSpawnPoint.setLocation( p.getLocation() );
+                        p.sendMessage(NGBuilder.getPrefix() + "建築者がTPする座標を設定しました。");
+                        return true;
+                    }
+                    if(args[1].equalsIgnoreCase("spawn")){
+                        GameConfig.WorldSpawnPoint.setLocation( p.getLocation() );
+                        p.sendMessage(NGBuilder.getPrefix() + "ワールドのスポーンポイントを設定しました。");
+                        return true;
+                    }
+                }
+                if (GamePlayers.getSettingPlayers().contains(((Player) sender).getUniqueId())) {
+                    sender.sendMessage(NGBuilder.getPrefix() + "座標編集モードを終了しました。");
+                    GamePlayers.removeSettingPlayer(((Player) sender).getUniqueId());
                 } else {
-                    Player p = ((Player)sender);
-                    sender.sendMessage( NGBuilder.getPrefix() + "座標編集モードに入りました。" );
-                    GamePlayers.addSettingPlayer( p.getUniqueId() );
+                    Player p = ((Player) sender);
+                    sender.sendMessage(NGBuilder.getPrefix() + "座標編集モードに入りました。");
+                    GamePlayers.addSettingPlayer(p.getUniqueId());
 
                     // point1
-                    ItemStack item = new ItemStack( Material.WOOL,1, (byte)6);
+                    ItemStack item = new ItemStack(Material.WOOL, 1, (byte) 6);
                     ItemMeta meta = item.getItemMeta();
                     meta.setDisplayName(ChatColor.LIGHT_PURPLE + "建築可能エリア Point1");
                     item.setItemMeta(meta);
                     p.getInventory().addItem(item);
 
-                    item = new ItemStack( Material.WOOL,1, (byte)11);
+                    item = new ItemStack(Material.WOOL, 1, (byte) 11);
                     meta = item.getItemMeta();
                     meta.setDisplayName(ChatColor.AQUA + "建築可能エリア Point2");
                     item.setItemMeta(meta);
                     p.getInventory().addItem(item);
 
-                    item = new ItemStack( Material.WOOL,1, (byte)4);
-                    meta = item.getItemMeta();
-                    meta.setDisplayName(ChatColor.GOLD + "建築者TPポイント");
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
+//                    item = new ItemStack( Material.WOOL,1, (byte)4);
+//                    meta = item.getItemMeta();
+//                    meta.setDisplayName(ChatColor.GOLD + "建築者TPポイント");
+//                    item.setItemMeta(meta);
+//                    p.getInventory().addItem(item);
+
                 }
             } else if( args[0].equalsIgnoreCase("spec") ){
                 new BuilderSpecCmd().onCommand(sender,command,label,args);
@@ -120,6 +135,7 @@ public class BuilderCommand implements TabExecutor {
                     //生の値↓
 //                sender.sendMessage(item.getName() + ChatColor.RESET + ChatColor.GREEN + ": " + ChatColor.YELLOW + perList.get(item));
                 }
+                sender.sendMessage( ChatColor.YELLOW + "合計: " + ChatColor.GREEN + sortedKeys.size() + ChatColor.YELLOW + "件" );
                 sender.sendMessage(ChatColor.RED + "=============================================");
             } else if( args[0].equalsIgnoreCase("debug") ){
                 new BuilderDebugCmd().onCommand(sender,command,label,args);
@@ -296,6 +312,7 @@ public class BuilderCommand implements TabExecutor {
         Utility.sendCmdHelp(sender, "/builder list", "プレイヤーリストを表示します。");
         Utility.sendCmdHelp(sender, "/builder spec <Player>", "指定プレイヤーの観戦モードを切り替えます。");
         Utility.sendCmdHelp(sender, "/builder loc", "座標設定モードを切り替えます。");
+        Utility.sendCmdHelp(sender, "/builder loc <tp | spawn>", "建築者・ワールドスポーンポイントを設定します。");
         Utility.sendCmdHelp(sender, "/builder clean", "建築エリアをきれいにします。");
         Utility.sendCmdHelp(sender, "/builder now", "現在のお題を表示します。");
         Utility.sendCmdHelp(sender, "/builder option <Key> <Value>", "設定を変更します。");
@@ -329,6 +346,14 @@ public class BuilderCommand implements TabExecutor {
             if( args[0].equalsIgnoreCase("timer") ){
                 for (String name : new String[]{
                         "set", "add", "pause", "resume"
+                }) {
+                    if (name.toLowerCase().startsWith(args[1].toLowerCase())) {
+                        out.add(name);
+                    }
+                }
+            }if( args[0].equalsIgnoreCase("loc") ){
+                for (String name : new String[]{
+                        "spawn", "tp"
                 }) {
                     if (name.toLowerCase().startsWith(args[1].toLowerCase())) {
                         out.add(name);

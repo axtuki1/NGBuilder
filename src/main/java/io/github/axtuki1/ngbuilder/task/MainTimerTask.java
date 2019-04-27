@@ -360,7 +360,7 @@ public class MainTimerTask extends BaseTimerTask {
                                 }
                                 if( subTask instanceof StopTimeTask ){
                                     set.add("猶予: " + ChatColor.GREEN + ((StopTimeTask)subTask).getStopTime() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
-                                    if( ((StopTimeTask)subTask).getStopTime() > currentNGData.getCount() ){
+                                    if( ((StopTimeTask)subTask).getStopTime() >= currentNGData.getCount() ){
                                         NGEnd();
                                     }
                                 }
@@ -571,6 +571,9 @@ public class MainTimerTask extends BaseTimerTask {
     public void nextAction(){
         pause();
         endProcessing = true;
+        if( getSubTask() != null ){
+            getSubTask().stop();
+        }
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -722,9 +725,9 @@ public class MainTimerTask extends BaseTimerTask {
             }
             for( UUID uuid : ranking.get(i) ){
                 try {
-                    Bukkit.broadcastMessage("   "+ color.get(i - 1)+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.WHITE + " ("+GamePlayers.getData(uuid).getPoint()+")");
+                    Bukkit.broadcastMessage("   "+ color.get(i - 1)+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.WHITE + " "+GamePlayers.getData(uuid).getPoint()+"pt");
                 } catch ( ArrayIndexOutOfBoundsException e){
-                    Bukkit.broadcastMessage("   "+ ChatColor.WHITE+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.WHITE + " ("+GamePlayers.getData(uuid).getPoint()+")");
+                    Bukkit.broadcastMessage("   "+ ChatColor.WHITE+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.WHITE + " "+GamePlayers.getData(uuid).getPoint()+"pt");
                 }
             }
         }
