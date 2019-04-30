@@ -925,24 +925,30 @@ public enum NGData {
     public boolean canUse( ItemStack item ){
         if( getNGMode().equals(NGMode.Only) ){
             return contains(item);
-        } else {
+        } else if( getNGMode().equals(NGMode.Deny) ){
             return !contains(item);
+        } else {
+            return true;
         }
     }
 
     public boolean canUse( Block block ){
         if( getNGMode().equals(NGMode.Only) ){
             return contains(block);
-        } else {
+        } else if( getNGMode().equals(NGMode.Deny) ){
             return !contains(block);
+        } else {
+            return true;
         }
     }
 
     public boolean canUse( BlockData bd ){
         if( getNGMode().equals(NGMode.Only) ){
             return contains(bd);
-        } else {
+        } else if( getNGMode().equals(NGMode.Deny) ){
             return !contains(bd);
+        } else {
+            return true;
         }
     }
 
