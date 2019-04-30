@@ -725,9 +725,9 @@ public class MainTimerTask extends BaseTimerTask {
             }
             for( UUID uuid : ranking.get(i) ){
                 try {
-                    Bukkit.broadcastMessage("   "+ color.get(i - 1)+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.WHITE + " "+GamePlayers.getData(uuid).getPoint()+"pt");
+                    Bukkit.broadcastMessage("   "+ color.get(i - 1)+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.YELLOW + " "+GamePlayers.getData(uuid).getPoint()+"pt");
                 } catch ( ArrayIndexOutOfBoundsException e){
-                    Bukkit.broadcastMessage("   "+ ChatColor.WHITE+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.WHITE + " "+GamePlayers.getData(uuid).getPoint()+"pt");
+                    Bukkit.broadcastMessage("   "+ ChatColor.WHITE+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.YELLOW + " "+GamePlayers.getData(uuid).getPoint()+"pt");
                 }
             }
         }
@@ -735,7 +735,7 @@ public class MainTimerTask extends BaseTimerTask {
         for( PlayerData pd : GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player) ){
             int rank = rankingAll.get(pd.getUUID());
             pd.getPlayer().sendMessage("");
-            pd.getPlayer().sendMessage("   "+ ChatColor.GOLD + rank+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + pd.getName() + ChatColor.WHITE + " ("+pd.getPoint()+")");;
+            pd.getPlayer().sendMessage("   "+ ChatColor.GOLD + rank+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + pd.getName() + ChatColor.YELLOW + " "+pd.getPoint()+"pt");;
 //            pd.getPlayer().sendMessage("");
         }
         Bukkit.broadcastMessage(ChatColor.RED +"===============================================================");
