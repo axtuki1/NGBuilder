@@ -80,6 +80,28 @@ public class BuilderOptionCmd implements TabExecutor {
                         sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "数値で指定して下さい！");
                     }
                 }
+            } else if( args[1].equalsIgnoreCase("StopTimeMin") ){
+                if( args.length == 2 ){
+                    sender.sendMessage(NGBuilder.getPrefix() + "秒数を指定してください。");
+                } else {
+                    try{
+                        GameConfig.BlockCountMin.set(Integer.parseInt(args[2]));
+                        sender.sendMessage(NGBuilder.getPrefix() + ChatColor.GREEN + "最小秒数を "+args[2]+" に変更しました。");
+                    } catch (NumberFormatException e){
+                        sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "数値で指定して下さい！");
+                    }
+                }
+            } else if( args[1].equalsIgnoreCase("StopTimeMax") ){
+                if( args.length == 2 ){
+                    sender.sendMessage(NGBuilder.getPrefix() + "秒数を指定してください。");
+                } else {
+                    try{
+                        GameConfig.BlockCountMax.set(Integer.parseInt(args[2]));
+                        sender.sendMessage(NGBuilder.getPrefix() + ChatColor.GREEN + "最大秒数を "+args[2]+" に変更しました。");
+                    } catch (NumberFormatException e){
+                        sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "数値で指定して下さい！");
+                    }
+                }
             } else if( args[1].equalsIgnoreCase("Cycle") ){
                 if( args.length == 2 ){
                     sender.sendMessage(NGBuilder.getPrefix() + "回数を指定してください。");

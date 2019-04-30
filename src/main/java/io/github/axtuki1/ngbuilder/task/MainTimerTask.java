@@ -18,7 +18,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,36 +26,34 @@ import java.util.*;
 
 public class MainTimerTask extends BaseTimerTask {
 
-    private ScoreboardManager manager;
     private ThemeData currentThemeData;
     private NGData currentNGData;
     private PlayerData builderPlayerData;
-    private BlockCountTask blockCountTask;
+    private BaseTask subTask;
     private boolean endProcessing;
     private DecimalFormat df;
 
     public MainTimerTask(NGBuilder pl, long sec) {
         super(pl, sec);
-        if( sec == -1 ){
-            isInfinity = true;
-        } else {
-            isInfinity = false;
-        }
+        isInfinity = sec == -1;
     }
 
     private static boolean isInfinity = false;
+
+    public BaseTask getSubTask() {
+        return subTask;
+    }
 
     @Override
     public void start() {
         df = new DecimalFormat("##0.00%");
         setSecondsRest(getSecondsMax());
-        manager = Bukkit.getScoreboardManager();
         super.start();
         ArrayList<PlayerData> nonBuiltPlayers = new ArrayList<>();
 
         endProcessing = false;
 
-        blockCountTask = null;
+        subTask = null;
 
         if( GamePlayers.getBuiltPlayers().size() == 0 ){
             GameData.decrementCycle();
@@ -127,11 +124,7 @@ public class MainTimerTask extends BaseTimerTask {
         }
         GameData.setBeforeNGData(currentNGData);
 
-        if( getCurrentNGData().getNGMode().equals(NGData.NGMode.CountDeny) ){
-            blockCountTask = new BlockCountTask(getPlugin());
-            getCurrentNGData().genCount();
-            blockCountTask.start(1,1);
-        }
+        setCurrentNGData(currentNGData);
 
         makeScoreBoard();
 
@@ -238,14 +231,20 @@ public class MainTimerTask extends BaseTimerTask {
 
     public void setCurrentNGData(NGData currentNGData) {
         this.currentNGData = currentNGData;
-        if( getCurrentNGData().getNGMode().equals(NGData.NGMode.CountDeny) ){
+        NGData.NGMode mode = getCurrentNGData().getNGMode();
+        if( subTask != null ){
+            subTask.stop();
+            subTask.cancel();
+            subTask = null;
+        }
+        if( mode.equals(NGData.NGMode.CountDeny) || mode.equals(NGData.NGMode.StopTimeDeny) ){
             getCurrentNGData().genCount();
-            blockCountTask = new BlockCountTask(getPlugin());
-            blockCountTask.start(1,1);
-        } else if( blockCountTask != null ){
-            blockCountTask.stop();
-            blockCountTask.cancel();
-            blockCountTask = null;
+            if( mode.equals(NGData.NGMode.CountDeny) ){
+                subTask = new BlockCountTask(getPlugin());
+            } else if( mode.equals(NGData.NGMode.StopTimeDeny) ){
+                subTask = new StopTimeTask(getPlugin());
+            }
+            subTask.start(1,1);
         }
     }
 
@@ -291,6 +290,7 @@ public class MainTimerTask extends BaseTimerTask {
             for( Player p : Bukkit.getOnlinePlayers() ){
                 p.sendTitle(ChatColor.GOLD + "残り 1分！" , "", 10, 40, 10);
             }
+            Bukkit.broadcastMessage(NGBuilder.getPrefix() + ChatColor.GOLD + "残り 1分！");
             Utility.playSoundToAllPlayer(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             new BukkitRunnable() {
                 @Override
@@ -350,11 +350,19 @@ public class MainTimerTask extends BaseTimerTask {
                     if( pd.isBuilder() ){
                         set.add("お題: " + ChatColor.GREEN + currentThemeData.getTheme());
                         set.add("制約: " + ChatColor.GREEN + currentNGData.getShortName());
-                        if( getCurrentNGData().getNGMode().equals(NGData.NGMode.CountDeny) && !isEndProcessing() ){
-                            if( blockCountTask != null ){
-                                set.add("総ブロック: " + ChatColor.GREEN + blockCountTask.getCount() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
-                                if( blockCountTask.getCount() > currentNGData.getCount() ){
-                                    NGEnd();
+                        if( !isEndProcessing() ){
+                            if( subTask != null ){
+                                if( subTask instanceof BlockCountTask ){
+                                    set.add("総ブロック: " + ChatColor.GREEN + ((BlockCountTask)subTask).getCount() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
+                                    if( ((BlockCountTask)subTask).getCount() > currentNGData.getCount() ){
+                                        NGEnd();
+                                    }
+                                }
+                                if( subTask instanceof StopTimeTask ){
+                                    set.add("猶予: " + ChatColor.GREEN + ((StopTimeTask)subTask).getStopTime() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
+                                    if( ((StopTimeTask)subTask).getStopTime() >= currentNGData.getCount() ){
+                                        NGEnd();
+                                    }
                                 }
                             }
                         }
@@ -563,6 +571,9 @@ public class MainTimerTask extends BaseTimerTask {
     public void nextAction(){
         pause();
         endProcessing = true;
+        if( getSubTask() != null ){
+            getSubTask().stop();
+        }
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -714,9 +725,9 @@ public class MainTimerTask extends BaseTimerTask {
             }
             for( UUID uuid : ranking.get(i) ){
                 try {
-                    Bukkit.broadcastMessage("   "+ color.get(i - 1)+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.WHITE + " ("+GamePlayers.getData(uuid).getPoint()+")");
+                    Bukkit.broadcastMessage("   "+ color.get(i - 1)+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.YELLOW + " "+GamePlayers.getData(uuid).getPoint()+"pt");
                 } catch ( ArrayIndexOutOfBoundsException e){
-                    Bukkit.broadcastMessage("   "+ ChatColor.WHITE+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.WHITE + " ("+GamePlayers.getData(uuid).getPoint()+")");
+                    Bukkit.broadcastMessage("   "+ ChatColor.WHITE+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.YELLOW + " "+GamePlayers.getData(uuid).getPoint()+"pt");
                 }
             }
         }
@@ -724,7 +735,7 @@ public class MainTimerTask extends BaseTimerTask {
         for( PlayerData pd : GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player) ){
             int rank = rankingAll.get(pd.getUUID());
             pd.getPlayer().sendMessage("");
-            pd.getPlayer().sendMessage("   "+ ChatColor.GOLD + rank+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + pd.getName() + ChatColor.WHITE + " ("+pd.getPoint()+")");;
+            pd.getPlayer().sendMessage("   "+ ChatColor.GOLD + rank+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + pd.getName() + ChatColor.YELLOW + " "+pd.getPoint()+"pt");;
 //            pd.getPlayer().sendMessage("");
         }
         Bukkit.broadcastMessage(ChatColor.RED +"===============================================================");

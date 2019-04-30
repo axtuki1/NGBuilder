@@ -2,10 +2,7 @@ package io.github.axtuki1.ngbuilder;
 
 import io.github.axtuki1.ngbuilder.command.BuilderCommand;
 import io.github.axtuki1.ngbuilder.command.CleanCommand;
-import io.github.axtuki1.ngbuilder.listener.AsyncPlayerChatListener;
-import io.github.axtuki1.ngbuilder.listener.AsyncPlayerPreLoginListener;
-import io.github.axtuki1.ngbuilder.listener.BlockPlaceListener;
-import io.github.axtuki1.ngbuilder.listener.EntityDamageListener;
+import io.github.axtuki1.ngbuilder.listener.*;
 import io.github.axtuki1.ngbuilder.player.GamePlayers;
 import io.github.axtuki1.ngbuilder.system.GameData;
 import io.github.axtuki1.ngbuilder.task.BaseTask;
@@ -50,6 +47,7 @@ public final class NGBuilder extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);
         getServer().getPluginManager().registerEvents(new AsyncPlayerChatListener(), this);
         getServer().getPluginManager().registerEvents(new EntityDamageListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
 
         commands = new HashMap<>();
 
@@ -133,6 +131,10 @@ public final class NGBuilder extends JavaPlugin {
 
     public static String getPrefix(){
         return ChatColor.GREEN + "[" + ChatColor.AQUA + "NGBuilder" + ChatColor.GREEN + "] " + ChatColor.WHITE;
+    }
+
+    public static String getGameMasterPermission() {
+        return "Builder.GameMaster";
     }
 
     public static World getWorld() {

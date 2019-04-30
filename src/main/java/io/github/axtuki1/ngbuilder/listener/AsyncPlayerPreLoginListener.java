@@ -1,5 +1,6 @@
 package io.github.axtuki1.ngbuilder.listener;
 
+import io.github.axtuki1.ngbuilder.GameConfig;
 import io.github.axtuki1.ngbuilder.GameStatus;
 import io.github.axtuki1.ngbuilder.NGBuilder;
 import io.github.axtuki1.ngbuilder.Utility;
@@ -35,12 +36,12 @@ public class AsyncPlayerPreLoginListener implements Listener {
                 GamePlayers.setData(p.getUniqueId(), pd);
                 p.setPlayerListName(ChatColor.WHITE + "[観戦] " + p.getName() + " ");
                 e.setJoinMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + Utility.myReplaceAll(ChatColor.YELLOW.toString(), "", e.getJoinMessage()));
-                p.teleport(NGBuilder.getWorld().getSpawnLocation().add(0.5, 0, 0.5));
+                p.teleport(GameConfig.WorldSpawnPoint.getLocation());
             } else if( !pd.getPlayingType().equals(PlayerData.PlayingType.Player) ){
-                p.teleport(NGBuilder.getWorld().getSpawnLocation().add(0.5, 0, 0.5));
+                p.teleport(GameConfig.WorldSpawnPoint.getLocation());
             }
         } else {
-            p.teleport(NGBuilder.getWorld().getSpawnLocation());
+            p.teleport(GameConfig.WorldSpawnPoint.getLocation());
         }
     }
 

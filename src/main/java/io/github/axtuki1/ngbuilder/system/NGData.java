@@ -752,6 +752,33 @@ public enum NGData {
             return CountDenyMode.Hardcore;
         }
     },
+    StopTimeDeny{
+        @Override
+        public String getName() {
+            return "静止時間制限: " + getCount() + "秒";
+        }
+
+        @Override
+        public String getShortName() {
+            return ChatColor.YELLOW + "静止時間制限";
+        }
+
+        @Override
+        public String getDescription() {
+            return null;
+        }
+
+        @Override
+        public NGMode getNGMode() {
+            return NGMode.StopTimeDeny;
+        }
+
+        @Override
+        public int getPriority() {
+            return 2;
+        }
+
+    },
     NoNG{
         @Override
         public String getName() {
@@ -789,7 +816,7 @@ public enum NGData {
     abstract public String getDescription();
 
     public enum NGMode{
-        None, Deny, Only, BlockBreakDeny, FlyingDeny, LiquidDeny, EntityDeny, CountDeny
+        None, Deny, Only, BlockBreakDeny, FlyingDeny, LiquidDeny, EntityDeny, CountDeny, StopTimeDeny
     }
 
     public enum CountDenyMode{
@@ -836,7 +863,11 @@ public enum NGData {
     }
 
     public void genCount(){
-        count = Utility.generateRandom(GameConfig.BlockCountMax.getInt() - GameConfig.BlockCountMin.getInt()) + GameConfig.BlockCountMin.getInt();
+        if( getNGMode().equals(NGMode.CountDeny) ){
+            count = Utility.generateRandom(GameConfig.BlockCountMax.getInt() - GameConfig.BlockCountMin.getInt()) + GameConfig.BlockCountMin.getInt();
+        } else if( getNGMode().equals(NGMode.StopTimeDeny) ){
+            count = Utility.generateRandom(GameConfig.StopTimeMax.getInt() - GameConfig.StopTimeMin.getInt()) + GameConfig.StopTimeMin.getInt();
+        }
     }
 
     public List<BlockData> getList(){
@@ -894,24 +925,30 @@ public enum NGData {
     public boolean canUse( ItemStack item ){
         if( getNGMode().equals(NGMode.Only) ){
             return contains(item);
-        } else {
+        } else if( getNGMode().equals(NGMode.Deny) ){
             return !contains(item);
+        } else {
+            return true;
         }
     }
 
     public boolean canUse( Block block ){
         if( getNGMode().equals(NGMode.Only) ){
             return contains(block);
-        } else {
+        } else if( getNGMode().equals(NGMode.Deny) ){
             return !contains(block);
+        } else {
+            return true;
         }
     }
 
     public boolean canUse( BlockData bd ){
         if( getNGMode().equals(NGMode.Only) ){
             return contains(bd);
-        } else {
+        } else if( getNGMode().equals(NGMode.Deny) ){
             return !contains(bd);
+        } else {
+            return true;
         }
     }
 

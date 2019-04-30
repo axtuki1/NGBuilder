@@ -111,6 +111,36 @@ public enum GameConfig {
             return false;
         }
     },
+    StopTimeMax{
+        @Override
+        public String getName() {
+            return "静止可能時間ランダム最大値";
+        }
+
+        @Override
+        public String getValue() {
+            return String.valueOf( getInt() );
+        }
+        @Override
+        public boolean isBoolean() {
+            return false;
+        }
+    },
+    StopTimeMin{
+        @Override
+        public String getName() {
+            return "静止可能時間ランダム最小値";
+        }
+
+        @Override
+        public String getValue() {
+            return String.valueOf( getInt() );
+        }
+        @Override
+        public boolean isBoolean() {
+            return false;
+        }
+    },
     AllowAllGenre{
         @Override
         public String getName() {
@@ -189,6 +219,27 @@ public enum GameConfig {
         @Override
         public String getName() {
             return "建築可能エリアポイント1";
+        }
+
+        @Override
+        public String getValue() {
+            return null;
+        }
+
+        @Override
+        public boolean isLocation() {
+            return true;
+        }
+
+        @Override
+        public boolean canCommandChange() {
+            return false;
+        }
+    },
+    WorldSpawnPoint{
+        @Override
+        public String getName() {
+            return "スポーンポイント";
         }
 
         @Override

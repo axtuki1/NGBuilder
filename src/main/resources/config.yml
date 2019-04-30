@@ -3,6 +3,8 @@ DifficultyMin: 1
 DifficultyMax: 10
 BlockCountMin: 70
 BlockCountMax: 100
+StopTimeMin: 12
+StopTimeMax: 8
 Cycle: 3
 canBuilderPlacePoint1: {}
 canBuilderPlacePoint2: {}
