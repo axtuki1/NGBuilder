@@ -632,7 +632,7 @@ public class MainTimerTask extends BaseTimerTask {
     @Override
     public void onChat(AsyncPlayerChatEvent e) {
         Bukkit.broadcastMessage( "<"+e.getPlayer().getName()+"> " + e.getMessage() );
-        if( !builderPlayerData.getUUID().equals(e.getPlayer().getUniqueId()) ){
+        if( !builderPlayerData.getUUID().equals(e.getPlayer().getUniqueId()) && !endProcessing ){
             if( getCurrentThemeData().getTheme().equalsIgnoreCase( e.getMessage() ) ){
                 CorrectEnd(e.getPlayer());
             }
