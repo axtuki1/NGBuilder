@@ -42,8 +42,7 @@ public class BuilderCommand implements TabExecutor {
         }
         if( args[0].equalsIgnoreCase("ng") ){
             new BuilderNGCmd().onCommand(sender,command,label,args);
-        }
-        if( sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
+        } else if( sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
             if( args[0].equalsIgnoreCase("start") ){
                 if( GameStatus.getStatus().equals(GameStatus.End) ){
                     NGBuilder.init();
@@ -295,7 +294,7 @@ public class BuilderCommand implements TabExecutor {
     }
 
     private void sendCmdHelp(Player sender) {
-        Utility.sendCmdHelp(sender, "/builder patchnote", "パッチノートを参照します。");
+        Utility.sendCmdHelp(sender, "/builder ng <...>", "NGについて参照します。");
     }
 
     private void sendAdminCmdHelp(Player sender) {
@@ -331,7 +330,7 @@ public class BuilderCommand implements TabExecutor {
                 }
             }
             for (String name : new String[]{
-                    "patchnote"
+                    "ng"
             }) {
                 if (name.toLowerCase().startsWith(args[0].toLowerCase())) {
                     out.add(name);

@@ -8,6 +8,6 @@ permissions:
     default: true
 commands:
   builder:
-    permission: Builder.GameMaster
+    permission: Builder.Player
   clean:
     permission: Builder.Player
