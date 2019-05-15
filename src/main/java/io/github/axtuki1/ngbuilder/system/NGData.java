@@ -25,8 +25,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "文字通り、ブロックの破壊は禁止です。";
         }
 
         @Override
@@ -45,7 +50,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 3;
         }
     },
@@ -61,8 +66,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "クリエイティブモード時の飛行を禁止します。切り替えた瞬間にNGになります。";
         }
 
         @Override
@@ -81,7 +91,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 3;
         }
     },
@@ -97,8 +107,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "水と溶岩の設置が禁止です。";
         }
 
         @Override
@@ -117,7 +132,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 4;
         }
     },
@@ -133,8 +148,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "ネザーとエンドに存在するブロックのみ使用が許可されます。";
         }
 
         @Override
@@ -143,7 +163,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 6;
         }
 
@@ -200,8 +220,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "ネザーとエンドに存在するブロックの使用が禁止されます。";
         }
 
         @Override
@@ -210,7 +235,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 6;
         }
 
@@ -231,8 +256,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "エンティティの召喚が禁止されます。アイテムドロップもNGとしています。";
         }
 
         @Override
@@ -241,7 +271,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 4;
         }
 
@@ -262,8 +292,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "階段ブロックの使用が禁止されます。";
         }
 
         @Override
@@ -272,7 +307,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 5;
         }
 
@@ -309,8 +344,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "階段ブロックのみ使用が許可されます。";
         }
 
         @Override
@@ -319,7 +359,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 2;
         }
 
@@ -345,8 +385,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "鉱石とその原石の使用が禁止されます。掘る/精錬で鉱石がドロップするブロック、それを9個でクラフトする事でできるブロックが対象です。";
         }
 
         @Override
@@ -355,7 +400,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 6;
         }
 
@@ -377,7 +422,10 @@ public enum NGData {
                     new BlockData(Material.EMERALD_BLOCK),
                     new BlockData(Material.REDSTONE_BLOCK),
                     new BlockData(Material.LAPIS_BLOCK),
-                    new BlockData(Material.QUARTZ_BLOCK)
+                    new BlockData(Material.QUARTZ_BLOCK),
+                    new BlockData(Material.STEP, 14),
+                    new BlockData(Material.STEP, 7),
+                    new BlockData(Material.DOUBLE_STEP, 7)
             );
         }
     },
@@ -393,8 +441,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "鉱石とその原石のみ使用が許可されます。掘る/精錬で鉱石がドロップするブロック、それを9個でクラフトする事でできるブロックが対象です。";
         }
 
         @Override
@@ -403,7 +456,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 4;
         }
 
@@ -429,8 +482,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "カーペットのみ使用が許可されます。";
         }
 
         @Override
@@ -439,7 +497,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 1;
         }
 
@@ -467,8 +525,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "羊毛ブロックのみ使用が許可されます。";
         }
 
         @Override
@@ -477,7 +540,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 4;
         }
 
@@ -505,8 +568,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "ガラス/色ガラス/板ガラス/色板ガラスのみ使用が許可されます。";
         }
 
         @Override
@@ -515,7 +583,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 2;
         }
 
@@ -546,8 +614,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "ハーフブロックのみ使用が許可されます。";
         }
 
         @Override
@@ -556,7 +629,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 4;
         }
 
@@ -589,8 +662,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "原木、木材、木系ドア、木系フェンスといった木系のブロックのみ使用が許可されます。";
         }
 
         @Override
@@ -599,7 +677,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 5;
         }
 
@@ -671,8 +749,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return "液体とピストンの伸びているブロックを含みません。";
+        }
+
+        @Override
+        public String getDescription() {
+            return "ランダムで変化するブロック数の間で建築してください。ノーマルは液体とピストンの伸びている部分をカウントしません。";
         }
 
         @Override
@@ -681,7 +764,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 5;
         }
 
@@ -702,8 +785,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return "液体は含みませんが、ピストンの起動状態では2ブロックとしてカウントされます。";
+        }
+
+        @Override
+        public String getDescription() {
+            return "ランダムで変化するブロック数の間で建築してください。ハードでは液体はカウントしませんが、ピストンが起動している状態では2ブロックとしてカウントされます。";
         }
 
         @Override
@@ -712,7 +800,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 2;
         }
 
@@ -733,8 +821,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return "水源/水流を含むずべてのブロックをカウントします。主に水の扱いには注意！";
+        }
+
+        @Override
+        public String getDescription() {
+            return "ランダムで変化するブロック数の間で建築してください。ハードコアでは如何なるブロックもカウントします。液体の扱いには十分注意！！";
         }
 
         @Override
@@ -743,7 +836,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 1;
         }
 
@@ -764,8 +857,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "ランダムで変化する秒数以上静止する事が禁じられます。ブロックを選ぶ際はたまに動いてあげましょう。";
         }
 
         @Override
@@ -774,15 +872,15 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
-            return 2;
+        public int getDefaultPriority() {
+            return 3;
         }
 
     },
     NoNG{
         @Override
         public String getName() {
-            return "制約なし！(ﾗｯｷｰ)";
+            return "制約なし！";
         }
 
         @Override
@@ -791,8 +889,13 @@ public enum NGData {
         }
 
         @Override
-        public String getDescription() {
+        public String getStartDescription() {
             return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "制約なし！！うれしい！！！！";
         }
 
         @Override
@@ -801,7 +904,7 @@ public enum NGData {
         }
 
         @Override
-        public int getPriority() {
+        public int getDefaultPriority() {
             return 2;
         }
     }
@@ -812,6 +915,8 @@ public enum NGData {
     abstract public String getName();
 
     abstract public String getShortName();
+
+    abstract public String getStartDescription();
 
     abstract public String getDescription();
 
@@ -829,7 +934,14 @@ public enum NGData {
         return CountDenyMode.None;
     }
 
-    abstract public int getPriority();
+    abstract public int getDefaultPriority();
+
+    public int getPriority(){
+        if(GameConfig.NGDataPrioritys.getConfigurationSection().get(name()) == null ){
+            return getDefaultPriority();
+        }
+        return GameConfig.NGDataPrioritys.getConfigurationSection().getInt(name());
+    }
 
     public List<BlockData> getDenyMaterial(){
         return new ArrayList<>();

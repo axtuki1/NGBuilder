@@ -9,6 +9,10 @@ import io.github.axtuki1.ngbuilder.system.NGData;
 import io.github.axtuki1.ngbuilder.task.BaseTask;
 import io.github.axtuki1.ngbuilder.task.BaseTimerTask;
 import io.github.axtuki1.ngbuilder.task.MainTimerTask;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -36,6 +40,9 @@ public class BuilderCommand implements TabExecutor {
             }
             return true;
         }
+        if( args[0].equalsIgnoreCase("ng") ){
+            new BuilderNGCmd().onCommand(sender,command,label,args);
+        }
         if( sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
             if( args[0].equalsIgnoreCase("start") ){
                 if( GameStatus.getStatus().equals(GameStatus.End) ){
@@ -47,6 +54,9 @@ public class BuilderCommand implements TabExecutor {
                 }
                 start(sender, command, label, args);
             } else if( args[0].equalsIgnoreCase("gmstart") ){
+                if( GameStatus.getStatus().equals(GameStatus.End) ){
+                    NGBuilder.init();
+                }
                 if( !GameStatus.getStatus().equals(GameStatus.Ready) ){
                     sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "待機状態ではありません。/builder initで初期化を行って下さい。");
                     return true;
@@ -123,20 +133,6 @@ public class BuilderCommand implements TabExecutor {
                 new BuilderThemeCmd().onCommand(sender,command,label,args);
             } else if( args[0].equalsIgnoreCase("list") ){
                 new BuilderPlayerListCmd().onCommand(sender,command,label,args);
-            } else if( args[0].equalsIgnoreCase("perlist") ){
-                sender.sendMessage(ChatColor.RED + "=============================================");
-                HashMap<NGData, Float> perList = NGData.getPriorityList();
-                //ソート
-                ArrayList<NGData> sortedKeys = new ArrayList(perList.keySet());
-                Collections.sort(sortedKeys);
-                DecimalFormat df = new DecimalFormat("##0.00%");
-                for( NGData item : sortedKeys ){
-                    sender.sendMessage(item.getName() + ChatColor.RESET + ChatColor.GREEN + ": " + ChatColor.YELLOW + df.format(perList.get(item)));
-                    //生の値↓
-//                sender.sendMessage(item.getName() + ChatColor.RESET + ChatColor.GREEN + ": " + ChatColor.YELLOW + perList.get(item));
-                }
-                sender.sendMessage( ChatColor.YELLOW + "合計: " + ChatColor.GREEN + sortedKeys.size() + ChatColor.YELLOW + "件" );
-                sender.sendMessage(ChatColor.RED + "=============================================");
             } else if( args[0].equalsIgnoreCase("debug") ){
                 new BuilderDebugCmd().onCommand(sender,command,label,args);
             } else if( args[0].equalsIgnoreCase("option") ){
@@ -147,7 +143,7 @@ public class BuilderCommand implements TabExecutor {
                     return true;
                 }
                 DecimalFormat df = new DecimalFormat("##0.00%");
-                sender.sendMessage(ChatColor.RED + "=========================="+ChatColor.GREEN+"[" + ChatColor.AQUA + "ROUND " + GamePlayers.getBuiltPlayers().size() + ChatColor.GREEN + "]"+ChatColor.RED+"==========================");
+                sender.sendMessage(ChatColor.RED + "======================="+ChatColor.GREEN+"[" + ChatColor.AQUA + "ROUND " + GamePlayers.getBuiltPlayers().size() + ChatColor.GREEN + "]"+ChatColor.RED+"=======================");
                 sender.sendMessage("");
                 sender.sendMessage("   "+ ChatColor.YELLOW +"建築者   "+ChatColor.GREEN+": " + ChatColor.WHITE + ((MainTimerTask)NGBuilder.getTask()).getBuilderPlayerData().getName());
                 sender.sendMessage("   "+ ChatColor.YELLOW +"ジャンル "+ChatColor.GREEN+": " + ChatColor.WHITE + ((MainTimerTask)NGBuilder.getTask()).getCurrentThemeData().getGenre());
@@ -159,7 +155,7 @@ public class BuilderCommand implements TabExecutor {
                     sender.sendMessage("   " + ChatColor.GOLD + ChatColor.BOLD.toString() + "NGBonusあり！ x" + ((MainTimerTask)NGBuilder.getTask()).getCurrentNGData().getBonus());
                 }
                 sender.sendMessage("");
-                sender.sendMessage(ChatColor.RED +"============================================================");
+                sender.sendMessage(ChatColor.RED +"========================================================");
 
             } else if( args[0].equalsIgnoreCase("clean") ){
                 new BukkitRunnable(){
@@ -246,11 +242,11 @@ public class BuilderCommand implements TabExecutor {
 
                 if(GameData.getCycle() != 1){
                     Bukkit.broadcastMessage(
-                            ChatColor.RED + "==========================" +
+                            ChatColor.RED + "======================" +
                                     ChatColor.GREEN + "[" +
                                     ChatColor.AQUA + (GameData.getMaxCycle() - (GameData.getCycle() - 1)) + ChatColor.GRAY + "/" + ChatColor.AQUA + GameData.getMaxCycle()+"巡目" +
                                     ChatColor.GREEN + "]" +
-                                    ChatColor.RED + "=========================="
+                                    ChatColor.RED + "======================"
                     );
                     for( Player p : Bukkit.getOnlinePlayers() ){
                         p.sendTitle(ChatColor.GREEN + "==== " + (GameData.getMaxCycle() - (GameData.getCycle() - 1)) + "巡目 ====", "" , 10, 40, 10);
@@ -327,7 +323,7 @@ public class BuilderCommand implements TabExecutor {
         if( args.length == 1 ){
             if( sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
                 for (String name : new String[]{
-                        "start", "gmstart", "stop", "next", "init", "timer", "option", "spec", "list", "theme", "clean", "perlist"
+                        "start", "gmstart", "stop", "next", "init", "timer", "option", "spec", "list", "theme", "clean"
                 }) {
                     if (name.toLowerCase().startsWith(args[0].toLowerCase())) {
                         out.add(name);
@@ -365,6 +361,8 @@ public class BuilderCommand implements TabExecutor {
                 out = new BuilderOptionCmd().onTabComplete(sender, command, alias, args);
             } else if( args[0].equalsIgnoreCase("theme") ){
                 out = new BuilderThemeCmd().onTabComplete(sender, command, alias, args);
+            } else if( args[0].equalsIgnoreCase("ng") ){
+                out = new BuilderNGCmd().onTabComplete(sender, command, alias, args);
             } else if( args[0].equalsIgnoreCase("debug") ){
                 out = new BuilderDebugCmd().onTabComplete(sender, command, alias, args);
             }

@@ -54,9 +54,10 @@ public class BuilderThemeCmd implements TabExecutor {
                     GameConfig.ThemeDataList.addTheme(
                             td
                     );
-                    Player p = (Player)sender;
                     sender.sendMessage(NGBuilder.getPrefix() + "追加: "+td.getGenre()+": お題「"+td.getTheme()+"」難:"+td.getDifficulty()+" 倍:"+td.getBonusPer()+" 加:"+td.getBonusAdd()+"");
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 1 , (float) 2);
+                    if( sender instanceof Player ){
+                        ((Player)sender).playSound(((Player)sender).getLocation(), Sound.BLOCK_NOTE_PLING, 1 , (float) 2);
+                    }
                 } catch ( NumberFormatException e ){
                     sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "数値である場所が数値ではありません。");
                     sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "お題にはスペースを使用できません。");
@@ -218,20 +219,30 @@ public class BuilderThemeCmd implements TabExecutor {
 //        sender.sendMessage(ChatColor.YELLOW + "設定されているスポーンポイント");
             for( String key : tdlist.keySet() ){
                 ThemeData td = tdlist.get(key);
-                TextComponent base = new TextComponent( " " );
-                TextComponent data = new TextComponent(
-                        td.getGenre() + ": " + td.getTheme() +
-                                " / 難:" +
-                                td.getDifficulty() +
-                                " 倍:" +
-                                td.getBonusPer() +
-                                " 加:" +
-                                td.getBonusAdd()
-                );
-                base.addExtra( " "+key+": ");
-                base.addExtra(data);
-                for( Player p : Bukkit.getOnlinePlayers() ){
-                    p.spigot().sendMessage(base);
+                if( sender instanceof Player ){
+                    TextComponent base = new TextComponent( " " );
+                    TextComponent data = new TextComponent(
+                            td.getGenre() + ": " + td.getTheme() +
+                                    " / 難:" +
+                                    td.getDifficulty() +
+                                    " 倍:" +
+                                    td.getBonusPer() +
+                                    " 加:" +
+                                    td.getBonusAdd()
+                    );
+                    base.addExtra( " "+key+": ");
+                    base.addExtra(data);
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        p.spigot().sendMessage(base);
+                    }
+                } else {
+                    sender.sendMessage("  "+key+": " + td.getGenre() + ": " + td.getTheme() +
+                            " / 難:" +
+                            td.getDifficulty() +
+                            " 倍:" +
+                            td.getBonusPer() +
+                            " 加:" +
+                            td.getBonusAdd() );
                 }
             }
             Bukkit.broadcastMessage(ChatColor.YELLOW + "合計: "+ChatColor.GREEN+tdlist.size()+ChatColor.YELLOW+"件");
