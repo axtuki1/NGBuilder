@@ -92,7 +92,7 @@ public class BuilderNGCmd implements TabExecutor {
                     color = ChatColor.GRAY;
                 }
                 String send = color + item.getName() + ChatColor.RESET + ChatColor.GREEN + ": " + ChatColor.YELLOW + "[ "+item.getPriority()+" / " + df.format(perList.get(item))+" ]";
-                if( sender instanceof Player ){
+                if( sender instanceof Player && sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
                     TextComponent base = new TextComponent(""), remove = new TextComponent( "[X]" ), reset = new TextComponent( "[R]" );
                     remove.setBold(true);
                     remove.setColor( net.md_5.bungee.api.ChatColor.RED );
