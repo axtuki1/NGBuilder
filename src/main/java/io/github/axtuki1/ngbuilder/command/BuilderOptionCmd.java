@@ -121,6 +121,22 @@ public class BuilderOptionCmd implements TabExecutor {
                         "すべてのジャンルを出現させるように変更しました。",
                         "限定したジャンルのみ出現させるように変更しました。"
                 );
+            } else if( args[1].equalsIgnoreCase("ShowGenre") ){
+                Utility.SwitchConfig(
+                        args,
+                        sender,
+                        "ShowGenre",
+                        "ジャンルを表示させるように変更しました。",
+                        "ジャンルを表示しないように変更しました。"
+                );
+            } else if( args[1].equalsIgnoreCase("ShowDifficulty") ){
+                Utility.SwitchConfig(
+                        args,
+                        sender,
+                        "ShowDifficulty",
+                        "難易度を表示させるように変更しました。",
+                        "難易度を表示しないように変更しました。"
+                );
             } else if( args[1].equalsIgnoreCase("RoundTime") ){
                 if( args.length == 2 ){
                     sender.sendMessage(NGBuilder.getPrefix() + "秒数を指定してください。");

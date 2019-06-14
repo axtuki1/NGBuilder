@@ -15,6 +15,9 @@ BuilderSpawnPoint:
   z: 0
   yaw: 0
   pitch: 0
+
+ShowDifficulty: true
+ShowGenre: true
 AllowAllGenre: true
 AllowGenre:
   - "未設定"

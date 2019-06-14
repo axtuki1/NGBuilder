@@ -21,6 +21,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent e) {
         // 参加時
+        GameConfig.WorldSpawnPoint.reload();
         Player p = e.getPlayer();
         p.setCollidable(false);
         p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard() );

@@ -1,5 +1,6 @@
 package io.github.axtuki1.ngbuilder;
 
+import io.github.axtuki1.ngbuilder.system.NGData;
 import io.github.axtuki1.ngbuilder.system.ThemeData;
 import io.github.axtuki1.ngbuilder.util.Config;
 import org.bukkit.Bukkit;
@@ -152,6 +153,28 @@ public enum GameConfig {
             return String.valueOf(getBoolean());
         }
     },
+    ShowGenre{
+        @Override
+        public String getName() {
+            return "ジャンルを表示するか";
+        }
+
+        @Override
+        public String getValue() {
+            return String.valueOf(getBoolean());
+        }
+    },
+    ShowDifficulty{
+        @Override
+        public String getName() {
+            return "難易度を表示するか";
+        }
+
+        @Override
+        public String getValue() {
+            return String.valueOf(getBoolean());
+        }
+    },
     AllowGenre{
         @Override
         public String getName() {
@@ -278,6 +301,32 @@ public enum GameConfig {
             return false;
         }
     },
+    NGDataPrioritys{
+        @Override
+        public String getName() {
+            return "各NGの優先度";
+        }
+
+        @Override
+        public String getValue() {
+            return null;
+        }
+
+        @Override
+        public boolean isThemeList() {
+            return true;
+        }
+
+        @Override
+        public boolean canCommandChange() {
+            return false;
+        }
+
+        @Override
+        public String getFileName() {
+            return "NGDataSettings.yml";
+        }
+    },
     ThemeDataList{
         @Override
         public String getName() {
@@ -387,6 +436,10 @@ public enum GameConfig {
     public List<String> getStringList(){
         if( !isStringList() ) return null;
         return getConfig().getStringList(getPath());
+    }
+
+    public ConfigurationSection getConfigurationSection(){
+        return getConfig().getConfigurationSection(getPath());
     }
 
     public void addStringList(String string){
@@ -737,8 +790,21 @@ public enum GameConfig {
         return null;
     }
 
+    public HashMap<NGData, Integer> getNGDataPrioritys(){
+        HashMap<NGData, Integer> out = new HashMap<>();
+        for( NGData ng : NGData.values() ){
+            out.put(ng, ng.getPriority());
+        }
+        return out;
+    }
 
-
+    public void setNGDataPrioritys(HashMap<NGData, Integer> input){
+        HashMap<String, Integer> out = new HashMap<>();
+        for( NGData ng : input.keySet() ){
+            out.put(ng.name(), input.get(ng));
+        }
+        set(out);
+    }
 
     public String getFileName(){
         return null;

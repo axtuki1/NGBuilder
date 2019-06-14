@@ -76,11 +76,18 @@ public class Utility {
     }
 
     public static void sendCmdHelp(CommandSender p, String cmd, String help, boolean Prefix){
-        sendCmdHelp((Player)p, cmd, help, Prefix);
+        String send = " ";
+        if(Prefix){
+            send = NGBuilder.getPrefix();
+        }
+        p.sendMessage(send + CmdColor(cmd));
+        p.sendMessage(send + ChatColor.GREEN + "   " + help);
     }
 
     public static void sendCmdHelp(CommandSender p, String cmd, String help){
-        sendCmdHelp((Player)p, cmd, help, false);
+        String send = " ";
+        p.sendMessage(send + CmdColor(cmd));
+        p.sendMessage(send + ChatColor.GREEN + "   " + help);
     }
 
     public static String CmdColor(String s){
