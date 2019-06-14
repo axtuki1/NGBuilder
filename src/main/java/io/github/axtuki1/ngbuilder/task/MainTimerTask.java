@@ -393,6 +393,22 @@ public class MainTimerTask extends BaseTimerTask {
                 if( !pd.isHiddenInfo() ){
                     set.add("お題: " + ChatColor.GREEN + currentThemeData.getTheme());
                     set.add("制約: " + ChatColor.GREEN + currentNGData.getShortName());
+                    if( !isEndProcessing() ){
+                        if( subTask != null ){
+                            if( subTask instanceof BlockCountTask ){
+                                set.add("総ブロック: " + ChatColor.GREEN + ((BlockCountTask)subTask).getCount() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
+                                if( ((BlockCountTask)subTask).getCount() > currentNGData.getCount() ){
+                                    NGEnd();
+                                }
+                            }
+                            if( subTask instanceof StopTimeTask ){
+                                set.add("猶予: " + ChatColor.GREEN + ((StopTimeTask)subTask).getStopTime() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
+                                if( ((StopTimeTask)subTask).getStopTime() >= currentNGData.getCount() ){
+                                    NGEnd();
+                                }
+                            }
+                        }
+                    }
                 }
             } else if( pd.getPlayingType().equals(PlayerData.PlayingType.Spectator) ){
 //                set.add("役職: " + ChatColor.AQUA + "[Spectator]");

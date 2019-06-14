@@ -684,6 +684,9 @@ public enum NGData {
         @Override
         public List<BlockData> getOnlyMaterial() {
             return Arrays.asList(
+                    new BlockData(Material.LEAVES, true),
+                    new BlockData(Material.LEAVES_2, true),
+
                     new BlockData(Material.LOG, true),
                     new BlockData(Material.LOG_2, true),
 
