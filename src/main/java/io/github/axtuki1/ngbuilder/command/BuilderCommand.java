@@ -9,10 +9,6 @@ import io.github.axtuki1.ngbuilder.system.NGData;
 import io.github.axtuki1.ngbuilder.task.BaseTask;
 import io.github.axtuki1.ngbuilder.task.BaseTimerTask;
 import io.github.axtuki1.ngbuilder.task.MainTimerTask;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -228,7 +224,7 @@ public class BuilderCommand implements TabExecutor {
                 return;
             }
         }
-        Bukkit.broadcastMessage(NGBuilder.getPrefix() + "まもなく開始します...");
+        Bukkit.broadcastMessage(NGBuilder.getPrefix() + "準備しています...");
         long delay = 60;
 
         GameData.setCycle(GameConfig.Cycle.getInt());

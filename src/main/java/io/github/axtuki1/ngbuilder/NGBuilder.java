@@ -15,7 +15,6 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.List;
@@ -122,7 +121,10 @@ public final class NGBuilder extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        if (NGBuilder.getTask() != null) {
+            NGBuilder.getTask().stop();
+            NGBuilder.setTask(null);
+        }
     }
 
     public static NGBuilder getMain() {

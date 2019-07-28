@@ -6,6 +6,8 @@ permissions:
     default: op
   Builder.Player:
     default: true
+  Builder.Broadcaster:
+    default: false
 commands:
   builder:
     permission: Builder.Player

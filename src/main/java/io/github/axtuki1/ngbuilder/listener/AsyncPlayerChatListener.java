@@ -33,7 +33,7 @@ public class AsyncPlayerChatListener implements Listener {
                 f = Utility.myReplaceAll("＠", "", f);
                 e.setMessage(ChatColor.BOLD + f);
             }
-            Bukkit.broadcastMessage(ChatColor.YELLOW + "[GM] <" + e.getPlayer().getName() + "> " + e.getMessage());
+            Bukkit.broadcastMessage(ChatColor.WHITE + "<" + ChatColor.YELLOW + e.getPlayer().getName() + ChatColor.WHITE + "> " + e.getMessage());
             return;
         }
         if( !GameStatus.getStatus().equals(GameStatus.Ready) && !GameStatus.getStatus().equals(GameStatus.End) ){

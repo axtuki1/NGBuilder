@@ -1,5 +1,6 @@
 package io.github.axtuki1.ngbuilder;
 
+import io.github.axtuki1.ngbuilder.player.PlayerData;
 import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
@@ -536,6 +537,20 @@ public class Utility {
                 }
             }
         }
+    }
+
+    public static String listingByPlayerData(List<PlayerData> o){
+        StringBuilder sb = new StringBuilder();
+        String output = "";
+        for( PlayerData a : o ){
+            sb.append(a.getName()).append(", ");
+        }
+        if( (sb.length() - 2) >= 0 ){
+            output = sb.substring(0, sb.length() - 2);
+        } else {
+            output = sb.toString();
+        }
+        return output;
     }
 
     public static void playSoundToAllPlayer(Sound sound, float vol, float pitch){

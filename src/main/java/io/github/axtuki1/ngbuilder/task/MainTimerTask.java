@@ -66,9 +66,11 @@ public class MainTimerTask extends BaseTimerTask {
             pd.setBuilder(false);
             if(pd.getPlayer() != null){
                 pd.getPlayer().getInventory().clear();
-            }
-            if( !GamePlayers.getBuiltPlayers().contains(pd.getUUID()) ){
-                nonBuiltPlayers.add(pd);
+                if( !GamePlayers.getBuiltPlayers().contains(pd.getUUID()) ){
+                    nonBuiltPlayers.add(pd);
+                }
+            } else {
+                pd.setPlayingType(PlayerData.PlayingType.Spectator);
             }
             GamePlayers.setData(pd.getUUID(), pd);
         }
@@ -162,7 +164,9 @@ public class MainTimerTask extends BaseTimerTask {
         if(GameConfig.ShowDifficulty.getBoolean()){
             Bukkit.broadcastMessage("   "+ ChatColor.YELLOW +"難易度   "+ChatColor.GREEN+": " + ChatColor.WHITE + currentThemeData.getDifficulty());
         }
-        builderPlayerData.getPlayer().sendMessage("   " + ChatColor.YELLOW + "お題     " + ChatColor.GREEN + ": " + ChatColor.WHITE + currentThemeData.getTheme());
+        if(!builderPlayerData.getPlayer().hasPermission("Builder.Broadcaster")){
+            builderPlayerData.getPlayer().sendMessage("   " + ChatColor.YELLOW + "お題     " + ChatColor.GREEN + ": " + ChatColor.WHITE + currentThemeData.getTheme());
+        }
         builderPlayerData.getPlayer().sendMessage("   " + ChatColor.YELLOW + "制約     " + ChatColor.GREEN + ": " + ChatColor.WHITE + currentNGData.getName() + ChatColor.YELLOW + " ["+df.format(currentNGData.getPriorityPer())+"]");
         builderPlayerData.getPlayer().sendMessage("   " + ChatColor.YELLOW + "減点     " + ChatColor.GREEN + ": " + ChatColor.WHITE + "-" + currentNGData.getPenalty());
         if(currentNGData.getBonus() > 1){
@@ -179,13 +183,15 @@ public class MainTimerTask extends BaseTimerTask {
             if( pd.getPlayingType().equals(PlayerData.PlayingType.Player) ){
                 if( pd.isBuilder() ){
                     p.setGameMode(GameMode.CREATIVE);
-                    p.sendTitle(
-                            "お題: "+ ChatColor.GREEN + currentThemeData.getTheme() ,
-                            ChatColor.LIGHT_PURPLE + currentNGData.getName(),
-                            10,
-                            20*3,
-                            20
-                    );
+                    if( !p.hasPermission("Builder.Broadcaster") ){
+                        p.sendTitle(
+                                "お題: "+ ChatColor.GREEN + currentThemeData.getTheme() ,
+                                ChatColor.LIGHT_PURPLE + currentNGData.getName(),
+                                10,
+                                20*3,
+                                20
+                        );
+                    }
                     p.teleport( GameConfig.BuilderSpawnPoint.getLocation().add(0.5, 0, 0.5) );
                     ItemStack item = new ItemStack(Material.BARRIER);
                     p.getInventory().setItem(9, item);
@@ -745,33 +751,101 @@ public class MainTimerTask extends BaseTimerTask {
         }
 
         Bukkit.broadcastMessage(
-                ChatColor.RED + "========================" +
+                ChatColor.RED + "=========================" +
                         ChatColor.GREEN + "[" +
                         ChatColor.AQUA + "結果発表" +
                         ChatColor.GREEN + "]" +
-                        ChatColor.RED + "========================" );
+                        ChatColor.RED + "=========================" );
 //        Bukkit.broadcastMessage("");
-        for( int i = 1; i <= 5; i++ ){
-            if( ranking.get(i) == null ){
-                break;
-            }
-            for( UUID uuid : ranking.get(i) ){
-                try {
-                    Bukkit.broadcastMessage("   "+ color.get(i - 1)+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.YELLOW + " "+GamePlayers.getData(uuid).getPoint()+"pt");
-                } catch ( ArrayIndexOutOfBoundsException e){
-                    Bukkit.broadcastMessage("   "+ ChatColor.WHITE+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.YELLOW + " "+GamePlayers.getData(uuid).getPoint()+"pt");
-                }
-            }
-        }
-//        Bukkit.broadcastMessage("");
-        for( PlayerData pd : GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player) ){
-            int rank = rankingAll.get(pd.getUUID());
-            pd.getPlayer().sendMessage("");
-            pd.getPlayer().sendMessage("   "+ ChatColor.GOLD + rank+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + pd.getName() + ChatColor.YELLOW + " "+pd.getPoint()+"pt");;
+
+
+
+//        for( int i = 1; i <= 5; i++ ){
+//            if( ranking.get(i) == null ){
+//                break;
+//            }
+//            for( UUID uuid : ranking.get(i) ){
+//                try {
+//                    Bukkit.broadcastMessage("   "+ color.get(i - 1)+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.YELLOW + " "+GamePlayers.getData(uuid).getPoint()+"pt");
+//                } catch ( ArrayIndexOutOfBoundsException e){
+//                    Bukkit.broadcastMessage("   "+ ChatColor.WHITE+i+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + Bukkit.getPlayer(uuid).getName() + ChatColor.YELLOW + " "+GamePlayers.getData(uuid).getPoint()+"pt");
+//                }
+//            }
+//        }
+////        Bukkit.broadcastMessage("");
+//        for( PlayerData pd : GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player) ){
+//            int rank = rankingAll.get(pd.getUUID());
 //            pd.getPlayer().sendMessage("");
+//            pd.getPlayer().sendMessage("   "+ ChatColor.GOLD + rank+"位" + ChatColor.GREEN+": " + ChatColor.WHITE + pd.getName() + ChatColor.YELLOW + " "+pd.getPoint()+"pt");;
+////            pd.getPlayer().sendMessage("");
+//        }
+
+        HashMap<Integer, Integer> rank_point = new HashMap<>();
+        HashMap<Integer, List<PlayerData>> point_uuidlist = new HashMap<>();
+
+        for(PlayerData pd : GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player)) {
+            List<PlayerData> u = point_uuidlist.get(pd.getPoint());
+            if (pd.getPoint() == 0) continue;
+            if (u == null) {
+                u = new ArrayList<>();
+            }
+            u.add(pd);
+//                            System.out.print(point_uuidlist);
+//                            System.out.print(pda.getPoint() + " 1");
+//                            System.out.print(u + " 1");
+            point_uuidlist.put(pd.getPoint(), u);
         }
-        Bukkit.broadcastMessage(ChatColor.RED +"========================================================");
+
+        List<Integer> sortedKeys = new ArrayList(point_uuidlist.keySet());
+        Collections.sort(sortedKeys);
+        Collections.reverse(sortedKeys);
+
+        int i = 1, your_rank = 0;
+
+        List<String> msg = new ArrayList<>();
+
+        if( sortedKeys.size() == 0 ){
+            msg.add(ChatColor.RED + "  ===== " + ChatColor.WHITE + "ポイントを所持している人はいませんでした" + ChatColor.RED + " =====");
+        } else {
+            for( int key : sortedKeys ){
+                msg.add(getRankColor(i) + "  "+i+"位: " + ChatColor.YELLOW + key + "pt" + ChatColor.GRAY + " / " + ChatColor.WHITE + Utility.listingByPlayerData(point_uuidlist.get(key)));
+                rank_point.put(key, i);
+                i += point_uuidlist.get(key).size();
+            }
+        }
+
+        for( String s : msg ) {
+            Bukkit.broadcastMessage(s);
+        }
+        msg.clear();
+        for ( PlayerData pd : GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player) ){
+            if(rank_point.get(pd.getPoint()) != null){
+                your_rank = rank_point.get(pd.getPoint());
+            }
+            msg.add(ChatColor.GRAY + "-----------------------------------------------------------");
+            msg.add(ChatColor.GREEN + " "+ ( your_rank <= 0 ? "?" : your_rank ) +"位 " + pd.getName() + ": " + pd.getPoint() +"pt");
+            pd.getPlayer().sendMessage(msg.toArray(new String[msg.size()]));
+        }
+        Bukkit.broadcastMessage(ChatColor.RED + "===========================================================");
 
 
+
+
+
+
+//        Bukkit.broadcastMessage(ChatColor.RED +"========================================================");
+
+
+    }
+
+    private ChatColor getRankColor(int count) {
+        switch (count) {
+            case 1: return ChatColor.GOLD;
+            case 2: return ChatColor.YELLOW;
+            case 3: return ChatColor.AQUA;
+            case 4: return ChatColor.GREEN;
+            case 5: return ChatColor.LIGHT_PURPLE;
+        }
+        return ChatColor.WHITE;
     }
 }
