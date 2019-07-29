@@ -70,9 +70,14 @@ public class MainTimerTask extends BaseTimerTask {
                     nonBuiltPlayers.add(pd);
                 }
             } else {
+                Bukkit.broadcast("[棄権通知] >>> " + pd.getName() + ": 観戦へ変更しました", NGBuilder.getGameMasterPermission());
                 pd.setPlayingType(PlayerData.PlayingType.Spectator);
             }
             GamePlayers.setData(pd.getUUID(), pd);
+        }
+        if( nonBuiltPlayers.size() == 0 ){
+            nextActionNonPlayers();
+            return;
         }
         builderPlayerData = nonBuiltPlayers.get( Utility.generateRandom( nonBuiltPlayers.size() ) );
         GamePlayers.addBuiltPlayer(builderPlayerData.getUUID());
@@ -155,7 +160,7 @@ public class MainTimerTask extends BaseTimerTask {
         Bukkit.broadcastMessage("");
         Bukkit.broadcastMessage("   "+ ChatColor.YELLOW +"建築者   "+ChatColor.GREEN+": " + ChatColor.WHITE + builderPlayerData.getName());
         if( GameConfig.ShowGenre.getBoolean() ){
-            if( Utility.generateRandom(10) <= 1 ){
+            if( Utility.generateRandom(10) <= 0 ){
                 Bukkit.broadcastMessage("   "+ ChatColor.YELLOW +"ジャンル "+ChatColor.GREEN+": " + ChatColor.WHITE + ChatColor.MAGIC + "HIMITSU");
             } else {
                 Bukkit.broadcastMessage("   "+ ChatColor.YELLOW +"ジャンル "+ChatColor.GREEN+": " + ChatColor.WHITE + currentThemeData.getGenre());
@@ -164,7 +169,7 @@ public class MainTimerTask extends BaseTimerTask {
         if(GameConfig.ShowDifficulty.getBoolean()){
             Bukkit.broadcastMessage("   "+ ChatColor.YELLOW +"難易度   "+ChatColor.GREEN+": " + ChatColor.WHITE + currentThemeData.getDifficulty());
         }
-        if(!builderPlayerData.getPlayer().hasPermission("Builder.Broadcaster")){
+        if(!builderPlayerData.getPlayer().hasPermission(NGBuilder.getBroadcasterPermission())){
             builderPlayerData.getPlayer().sendMessage("   " + ChatColor.YELLOW + "お題     " + ChatColor.GREEN + ": " + ChatColor.WHITE + currentThemeData.getTheme());
         }
         builderPlayerData.getPlayer().sendMessage("   " + ChatColor.YELLOW + "制約     " + ChatColor.GREEN + ": " + ChatColor.WHITE + currentNGData.getName() + ChatColor.YELLOW + " ["+df.format(currentNGData.getPriorityPer())+"]");
@@ -183,7 +188,15 @@ public class MainTimerTask extends BaseTimerTask {
             if( pd.getPlayingType().equals(PlayerData.PlayingType.Player) ){
                 if( pd.isBuilder() ){
                     p.setGameMode(GameMode.CREATIVE);
-                    if( !p.hasPermission("Builder.Broadcaster") ){
+                    if( p.hasPermission(NGBuilder.getBroadcasterPermission()) ){
+                        p.sendTitle(
+                                ChatColor.LIGHT_PURPLE + currentNGData.getName(),
+                                "お題は右を見てね ==>",
+                                10,
+                                20*3,
+                                20
+                        );
+                    } else {
                         p.sendTitle(
                                 "お題: "+ ChatColor.GREEN + currentThemeData.getTheme() ,
                                 ChatColor.LIGHT_PURPLE + currentNGData.getName(),
@@ -192,7 +205,7 @@ public class MainTimerTask extends BaseTimerTask {
                                 20
                         );
                     }
-                    p.teleport( GameConfig.BuilderSpawnPoint.getLocation().add(0.5, 0, 0.5) );
+                    p.teleport( GameConfig.BuilderSpawnPoint.getLocation() );
                     ItemStack item = new ItemStack(Material.BARRIER);
                     p.getInventory().setItem(9, item);
                     p.setFlying(false);
@@ -201,7 +214,7 @@ public class MainTimerTask extends BaseTimerTask {
                             GameConfig.canBuilderPlacePoint1.getLocation(),
                             GameConfig.canBuilderPlacePoint2.getLocation())
                     ){
-                        p.teleport(NGBuilder.getWorld().getSpawnLocation().add(0.5, 0, 0.5));
+                        p.teleport(NGBuilder.getWorld().getSpawnLocation());
                     }
                     p.setGameMode(GameMode.ADVENTURE);
                     p.setAllowFlight(true);
@@ -305,6 +318,7 @@ public class MainTimerTask extends BaseTimerTask {
                 p.sendTitle(ChatColor.GOLD + "残り 1分！" , "", 10, 40, 10);
             }
             Bukkit.broadcastMessage(NGBuilder.getPrefix() + ChatColor.GOLD + "残り 1分！");
+            Bukkit.broadcastMessage(NGBuilder.getPrefix() + ChatColor.YELLOW + "お題の文字数: " + ChatColor.GREEN + currentThemeData.getTheme().length() + ChatColor.YELLOW +"文字");
             Utility.playSoundToAllPlayer(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             new BukkitRunnable() {
                 @Override
@@ -416,8 +430,6 @@ public class MainTimerTask extends BaseTimerTask {
                         }
                     }
                 }
-            } else if( pd.getPlayingType().equals(PlayerData.PlayingType.Spectator) ){
-//                set.add("役職: " + ChatColor.AQUA + "[Spectator]");
             } else {
                 set.add("役職: [なし]");
             }
@@ -444,6 +456,13 @@ public class MainTimerTask extends BaseTimerTask {
 //                SimpleDateFormat formatter = new SimpleDateFormat("m:ss");
 //                formatter.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
                 set.add("残り時間: " + Utility.getColor(getSeconds(), getSecondsMax()) + Utility.convSecToTime((int) getSeconds()));
+            }
+
+            if( pd.getPlayingType().equals(PlayerData.PlayingType.Spectator) ){
+                set.add(ChatColor.GRAY + ">>> Spectator Mode");
+            }
+            if( p.hasPermission(NGBuilder.getBroadcasterPermission()) ){
+                set.add(ChatColor.GRAY + ">>> Broadcaster Mode");
             }
 
             List<String> list = new ArrayList<>(set);
@@ -598,6 +617,50 @@ public class MainTimerTask extends BaseTimerTask {
         nextAction();
     }
 
+    public void nextActionNonPlayers(){
+        cancel();
+        if (GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player).size() <= GamePlayers.getBuiltPlayers().size()) {
+            if( GameData.getCycle() == 0 ){
+                Result();
+                NGBuilder.setTask(null);
+            } else {
+                GamePlayers.resetBuiltPlayers();
+                Bukkit.broadcastMessage(
+                        ChatColor.RED + "========================" +
+                                ChatColor.GREEN + "[" +
+                                ChatColor.AQUA + (GameData.getMaxCycle() - (GameData.getCycle() - 1)) + ChatColor.GRAY + "/" + ChatColor.AQUA + GameData.getMaxCycle()+"巡目" +
+                                ChatColor.GREEN + "]" +
+                                ChatColor.RED + "========================"
+                );
+                for( Player p : Bukkit.getOnlinePlayers() ){
+                    p.sendTitle(ChatColor.GREEN + "==== " + (GameData.getMaxCycle() - (GameData.getCycle() - 1)) + "巡目 ====", "" , 10, 40, 10);
+                }
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        builderPlayerData.getPlayer().teleport( NGBuilder.getWorld().getSpawnLocation().add(0.5,0,0.5) );
+                        BaseTimerTask task = new MainTimerTask(
+                                NGBuilder.getMain(),
+                                getSecondsMax()
+                        );
+                        task.start();
+                        NGBuilder.setTask(task);
+                    }
+                }.runTaskLater(NGBuilder.getMain(), 60);
+            }
+        } else {
+            if(builderPlayerData.getPlayer() != null){
+                builderPlayerData.getPlayer().teleport( NGBuilder.getWorld().getSpawnLocation().add(0.5,0,0.5) );
+            }
+            BaseTimerTask task = new MainTimerTask(
+                    NGBuilder.getMain(),
+                    getSecondsMax()
+            );
+            task.start();
+            NGBuilder.setTask(task);
+        }
+    }
+
     public void nextAction(){
         pause();
         endProcessing = true;
@@ -639,7 +702,9 @@ public class MainTimerTask extends BaseTimerTask {
                         }.runTaskLater(NGBuilder.getMain(), 60);
                     }
                 } else {
-                    builderPlayerData.getPlayer().teleport( NGBuilder.getWorld().getSpawnLocation().add(0.5,0,0.5) );
+                    if(builderPlayerData.getPlayer() != null){
+                        builderPlayerData.getPlayer().teleport( NGBuilder.getWorld().getSpawnLocation().add(0.5,0,0.5) );
+                    }
                     BaseTimerTask task = new MainTimerTask(
                             NGBuilder.getMain(),
                             getSecondsMax()
@@ -817,8 +882,8 @@ public class MainTimerTask extends BaseTimerTask {
         for( String s : msg ) {
             Bukkit.broadcastMessage(s);
         }
-        msg.clear();
         for ( PlayerData pd : GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player) ){
+            msg.clear();
             if(rank_point.get(pd.getPoint()) != null){
                 your_rank = rank_point.get(pd.getPoint());
             }

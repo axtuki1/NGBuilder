@@ -34,7 +34,7 @@ public class BuilderThemeCmd implements TabExecutor {
             return true;
         }
         if( args[1].equalsIgnoreCase("add") ){
-            if( args.length <= 3 ){
+            if( args.length <= 4 ){
                 sendCmdHelp(sender);
                 return true;
             }
@@ -170,6 +170,19 @@ public class BuilderThemeCmd implements TabExecutor {
                             " 加:" +
                             td.getBonusAdd());
                 }
+            }
+            sender.sendMessage(ChatColor.YELLOW + "合計: "+ChatColor.GREEN+tdlist.size()+ChatColor.YELLOW+"件  ジャンル数: "+ChatColor.GREEN+getd.size()+ChatColor.YELLOW+"件");
+            sender.sendMessage(ChatColor.RED + "=======================================================================");
+        } else if( args[1].equalsIgnoreCase("Genre") ){
+            HashMap<String, ThemeData> tdlist = GameConfig.ThemeDataList.getThemeHashMap();
+            sender.sendMessage(ChatColor.RED + "=======================================================================");
+//        sender.sendMessage(ChatColor.YELLOW + "設定されているスポーンポイント");
+            HashMap<String, HashMap<String, ThemeData>> getd = GameConfig.ThemeDataList.getThemeHashMapSortGenre();
+            List<String> i = new ArrayList<>(getd.keySet());
+            Collections.sort(i);
+            for( String key : i ){
+                HashMap<String, ThemeData> tdhash = getd.get(key);
+                sender.sendMessage(ChatColor.YELLOW + key + ": "+ChatColor.GREEN + tdhash.size() +ChatColor.YELLOW+"件");
             }
             sender.sendMessage(ChatColor.YELLOW + "合計: "+ChatColor.GREEN+tdlist.size()+ChatColor.YELLOW+"件  ジャンル数: "+ChatColor.GREEN+getd.size()+ChatColor.YELLOW+"件");
             sender.sendMessage(ChatColor.RED + "=======================================================================");

@@ -139,6 +139,10 @@ public final class NGBuilder extends JavaPlugin {
         return "Builder.GameMaster";
     }
 
+    public static String getBroadcasterPermission(){
+        return "Builder.Broadcaster";
+    }
+
     public static World getWorld() {
         return world;
     }

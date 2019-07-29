@@ -3,6 +3,7 @@ package io.github.axtuki1.ngbuilder.command;
 import io.github.axtuki1.ngbuilder.GameStatus;
 import io.github.axtuki1.ngbuilder.NGBuilder;
 import io.github.axtuki1.ngbuilder.player.GamePlayers;
+import io.github.axtuki1.ngbuilder.player.PlayerData;
 import io.github.axtuki1.ngbuilder.system.NGData;
 import io.github.axtuki1.ngbuilder.task.MainTimerTask;
 import org.bukkit.Bukkit;
@@ -34,6 +35,10 @@ public class BuilderDebugCmd implements TabExecutor {
             }
         } else if(args[1].equalsIgnoreCase("dng")) {
             GamePlayers.setCurrentDebuggingNGData(NGData.valueOf( args[2] ));
+        } else if(args[1].equalsIgnoreCase("mem")) {
+            for( PlayerData pd : GamePlayers.getPlayers().values() ){
+                pd.dump();
+            }
         } else if( args[1].equalsIgnoreCase("ng") ){
             if( GameStatus.getStatus().equals(GameStatus.Playing) ){
                 if( NGBuilder.getTask() != null ){

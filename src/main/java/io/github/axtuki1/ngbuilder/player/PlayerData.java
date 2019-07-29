@@ -72,6 +72,18 @@ public class PlayerData {
         isBuilder = false;
     }
 
+    public void dump() {
+        System.out.print("=================================");
+        System.out.print("isOnline: " + (getPlayer() != null));
+        System.out.print("UUID: " + getUUID());
+        System.out.print("Name: " + getName());
+        System.out.print("PlayingType: " + getPlayingType());
+        System.out.print("Point: " + getPoint());
+        System.out.print("isBuilder: " + isBuilder());
+        System.out.print("isHiddenInfo: " + isHiddenInfo());
+        System.out.print("=================================");
+    }
+
     public enum PlayingType {
         GameMaster, Spectator, Player
     }

@@ -39,6 +39,13 @@ public class AsyncPlayerPreLoginListener implements Listener {
                 e.setJoinMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + Utility.myReplaceAll(ChatColor.YELLOW.toString(), "", e.getJoinMessage()));
                 p.teleport(GameConfig.WorldSpawnPoint.getLocation());
             } else if( !pd.getPlayingType().equals(PlayerData.PlayingType.Player) ){
+                if( pd.getPlayingType().equals(PlayerData.PlayingType.Spectator) ){
+                    p.setGameMode(GameMode.ADVENTURE);
+                    p.setAllowFlight(true);
+                    p.setScoreboard( Bukkit.getScoreboardManager().getNewScoreboard() );
+                    p.setPlayerListName(ChatColor.WHITE + "[観戦] " + p.getName() + " ");
+                    e.setJoinMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + Utility.myReplaceAll(ChatColor.YELLOW.toString(), "", e.getJoinMessage()));
+                }
                 p.teleport(GameConfig.WorldSpawnPoint.getLocation());
             }
         } else {
