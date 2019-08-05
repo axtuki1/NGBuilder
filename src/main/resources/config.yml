@@ -15,9 +15,10 @@ BuilderSpawnPoint:
   z: 0
   yaw: 0
   pitch: 0
-
+DuplicateTheme: false
 ShowDifficulty: true
 ShowGenre: true
 AllowAllGenre: true
+Debug: false
 AllowGenre:
   - "未設定"

@@ -137,6 +137,14 @@ public class BuilderOptionCmd implements TabExecutor {
                         "難易度を表示させるように変更しました。",
                         "難易度を表示しないように変更しました。"
                 );
+            } else if( args[1].equalsIgnoreCase("DuplicateTheme") ){
+                Utility.SwitchConfig(
+                        args,
+                        sender,
+                        "DuplicateTheme",
+                        "お題の重複を許可しました。",
+                        "お題の重複を禁止しました。"
+                );
             } else if( args[1].equalsIgnoreCase("RoundTime") ){
                 if( args.length == 2 ){
                     sender.sendMessage(NGBuilder.getPrefix() + "秒数を指定してください。");

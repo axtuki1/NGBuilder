@@ -175,6 +175,17 @@ public enum GameConfig {
             return String.valueOf(getBoolean());
         }
     },
+    DuplicateTheme{
+        @Override
+        public String getName() {
+            return "1セッション内のお題の重複を許可するか";
+        }
+
+        @Override
+        public String getValue() {
+            return String.valueOf(getBoolean());
+        }
+    },
     AllowGenre{
         @Override
         public String getName() {
