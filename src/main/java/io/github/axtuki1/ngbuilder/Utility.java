@@ -543,7 +543,21 @@ public class Utility {
         StringBuilder sb = new StringBuilder();
         String output = "";
         for( PlayerData a : o ){
-            sb.append(a.getName()).append(", ");
+            sb.append(a.getName()).append(ChatColor.GRAY).append(", ");
+        }
+        if( (sb.length() - 2) >= 0 ){
+            output = sb.substring(0, sb.length() - 2);
+        } else {
+            output = sb.toString();
+        }
+        return output;
+    }
+
+    public static String listingByChatColor(List<ChatColor> o){
+        StringBuilder sb = new StringBuilder();
+        String output = "";
+        for( ChatColor a : o ){
+            sb.append(a).append(a.name()).append(ChatColor.GRAY).append(", ");
         }
         if( (sb.length() - 2) >= 0 ){
             output = sb.substring(0, sb.length() - 2);

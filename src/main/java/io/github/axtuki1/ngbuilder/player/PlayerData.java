@@ -1,6 +1,7 @@
 package io.github.axtuki1.ngbuilder.player;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -18,7 +19,8 @@ public class PlayerData {
     // プレイヤーかGMか
     private PlayingType type;
     // ポイント
-    private int point;
+    private int point, lastBuiltCycle;
+    private ChatColor color;
     // デバッグ項目
     private HashMap<String, Boolean> debug;
 
@@ -26,6 +28,8 @@ public class PlayerData {
         this.player = p.getUniqueId();
         this.type = PlayingType.Player;
         point = 0;
+        color = ChatColor.WHITE;
+        lastBuiltCycle = -1;
         isHiddenInfo = false;
         name = p.getName();
         debug = new HashMap<>();
@@ -36,7 +40,9 @@ public class PlayerData {
     public PlayerData(UUID uuid) {
         this.player = uuid;
         this.type = PlayingType.Player;
+        color = ChatColor.WHITE;
         isHiddenInfo = false;
+        lastBuiltCycle = -1;
         Player p = getPlayer();
         if( p != null ) {
             name = p.getName();
@@ -51,7 +57,9 @@ public class PlayerData {
         this.player = uuid;
         this.type = type;
         point = 0;
+        color = ChatColor.WHITE;
         isHiddenInfo = false;
+        lastBuiltCycle = -1;
         Player p = getPlayer();
         if( p != null ) {
             name = p.getName();
@@ -65,6 +73,8 @@ public class PlayerData {
         this.player = p.getUniqueId();
         point = 0;
         this.type = type;
+        color = ChatColor.WHITE;
+        lastBuiltCycle = -1;
         isHiddenInfo = false;
         name = p.getName();
         debug = new HashMap<>();
@@ -81,7 +91,12 @@ public class PlayerData {
         System.out.print("Point: " + getPoint());
         System.out.print("isBuilder: " + isBuilder());
         System.out.print("isHiddenInfo: " + isHiddenInfo());
+        System.out.print("LastBuiltCycle: " + getLastBuiltCycle());
         System.out.print("=================================");
+    }
+
+    public String getColorName() {
+        return getColor() + "["+getColor().name()+"]";
     }
 
     public enum PlayingType {
@@ -105,7 +120,7 @@ public class PlayerData {
         if( p != null ) {
             name = p.getName();
         }
-        return name;
+        return getColor() + name;
     }
 
     public boolean isBuilder() {
@@ -154,6 +169,22 @@ public class PlayerData {
 
     public void removePoint(int point){
         setPoint( getPoint() - point );
+    }
+
+    public void setColor(ChatColor color) {
+        this.color = color;
+    }
+
+    public ChatColor getColor() {
+        return color;
+    }
+
+    public int getLastBuiltCycle() {
+        return lastBuiltCycle;
+    }
+
+    public void setLastBuiltCycle(int lastBuiltCycle) {
+        this.lastBuiltCycle = lastBuiltCycle;
     }
 
     public void setDebug(HashMap<String, Boolean> debug) {

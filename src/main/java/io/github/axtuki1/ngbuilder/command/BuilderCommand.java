@@ -124,6 +124,10 @@ public class BuilderCommand implements TabExecutor {
                 }
             } else if( args[0].equalsIgnoreCase("spec") ){
                 new BuilderSpecCmd().onCommand(sender,command,label,args);
+            } else if( args[0].equalsIgnoreCase("style") ){
+                GameData.GameStyle s = GameData.GameStyle.valueOf(args[1]);
+                GameData.setStyle(s);
+                sender.sendMessage(NGBuilder.getPrefix() + ChatColor.GREEN + "ゲームモードを [" + s.name() + "] に変更しました。");
             } else if( args[0].equalsIgnoreCase("theme") ){
                 new BuilderThemeCmd().onCommand(sender,command,label,args);
             } else if( args[0].equalsIgnoreCase("list") ){
@@ -132,6 +136,9 @@ public class BuilderCommand implements TabExecutor {
                 new BuilderDebugCmd().onCommand(sender,command,label,args);
             } else if( args[0].equalsIgnoreCase("option") ){
                 new BuilderOptionCmd().onCommand(sender,command,label,args);
+            } else if( args[0].equalsIgnoreCase("played") ){
+                sender.sendMessage("プレイ済みお題=========");
+                sender.sendMessage(Utility.listing(GameData.getPlayedThemeList()));
             } else if( args[0].equalsIgnoreCase("now") ){
                 if( !GameStatus.getStatus().equals(GameStatus.Playing) ){
                     sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "現在ゲーム中ではありません。");
@@ -259,11 +266,46 @@ public class BuilderCommand implements TabExecutor {
                                 NGBuilder.getMain(),
                                 time
                         );
-                        for (Player p : Bukkit.getOnlinePlayers()) {
+                        List<ChatColor> color = new ArrayList<>();
+                        if( GameData.getStyle().equals(GameData.GameStyle.TEAM) ){
+                            float half = GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player).size() / 2;
+                            if( half <= 10 ){
+                                // 2チーム
+                                color.add(ChatColor.RED);
+                                color.add(ChatColor.AQUA);
+                            } else {
+                                // 4チーム
+                                color.add(ChatColor.RED);
+                                color.add(ChatColor.AQUA);
+                                color.add(ChatColor.YELLOW);
+                                color.add(ChatColor.GREEN);
+                            }
+                        }
+                        int i = 0;
+                        List<Player> all = new ArrayList<>();
+                        all.addAll(Bukkit.getOnlinePlayers());
+                        Collections.shuffle(all);
+                        if( GameData.getStyle().equals(GameData.GameStyle.TEAM) ){
+                            Bukkit.broadcastMessage(NGBuilder.getPrefix() + "チーム戦を開始します。");
+                            Bukkit.broadcastMessage(NGBuilder.getPrefix() + "仮実装のため進行不可になる可能性や結果発表が適切でない可能性等があります。");
+                        }
+                        for (Player p : all) {
                             PlayerData pd = GamePlayers.getData(p);
                             if (pd.getPlayingType().equals(PlayerData.PlayingType.Player)) {
                                 pd.getPlayer().sendMessage(ChatColor.RED + "=====" + ChatColor.WHITE + " ゲームに参加します " + ChatColor.RED + "=====");
                                 pd.getPlayer().sendMessage(ChatColor.AQUA + "ひらがなでチャットを送信することで回答できます。");
+                                if( GameData.getStyle().equals(GameData.GameStyle.TEAM) ){
+                                    if( pd.getColor().equals(ChatColor.WHITE) ){
+                                        pd.setColor( color.get(i) );
+                                        i++;
+                                        if( i == color.size() ){
+                                            i = 0;
+                                        }
+                                    }
+                                    pd.getPlayer().sendMessage(
+                                            ChatColor.WHITE + "あなたは "+pd.getColorName()+ChatColor.WHITE+" チームです。"
+                                    );
+                                }
                                 p.setGameMode(GameMode.ADVENTURE);
                                 p.setAllowFlight(true);
                                 p.setPlayerListName(p.getName() + " ");
@@ -318,7 +360,7 @@ public class BuilderCommand implements TabExecutor {
         if( args.length == 1 ){
             if( sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
                 for (String name : new String[]{
-                        "start", "gmstart", "stop", "next", "init", "timer", "option", "spec", "list", "theme", "clean"
+                        "start", "gmstart", "stop", "next", "init", "timer", "option", "spec", "list", "theme", "clean", "style", "played"
                 }) {
                     if (name.toLowerCase().startsWith(args[0].toLowerCase())) {
                         out.add(name);

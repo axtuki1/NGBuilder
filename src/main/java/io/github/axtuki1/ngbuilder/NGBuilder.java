@@ -59,10 +59,7 @@ public final class NGBuilder extends JavaPlugin {
         NGBuilder.getMain().reloadConfig();
         GameStatus.setStatus(GameStatus.Ready);
         GamePlayers.init();
-        GameData.setBeforeThemeData(null);
-        GameData.setBeforeNGData(null);
-        GameData.setRound(0);
-        GameData.setCycle(0);
+        GameData.init();
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -89,6 +86,7 @@ public final class NGBuilder extends JavaPlugin {
             NGBuilder.setTask(null);
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
+            p.setPlayerListName(p.getName() + " ");
             p.setFoodLevel(20);
             p.setCollidable(false);
             p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
@@ -214,6 +212,11 @@ public final class NGBuilder extends JavaPlugin {
         return commands.get(command.getName()).onTabComplete(sender, command, alias, args);
     }
 
+    public static void sendDebug(String s){
+        if( getMain().getConfig().getBoolean("Debug") ){
+            Bukkit.broadcast(ChatColor.GREEN + "[NGB:DEBUG] " + s, getGameMasterPermission());
+        }
+    }
 
 
 }
