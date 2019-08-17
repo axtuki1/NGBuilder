@@ -26,6 +26,16 @@ public final class NGBuilder extends JavaPlugin {
     private static NGBuilder main;
     private static World world;
 
+    public static String[] getChangeLog(){
+        return new String[]{
+                "チーム戦を実装しました。",
+                "...がまだまだ実験段階です。一人のデバッグってあんまり信用できないじゃん？",
+                "以下現時点の仕様",
+                "サーバー参加人数を2で割った数が10以下の場合2チーム、それ以外4チーム",
+                "表示スコアは個人スコア、ゲーム終了時にチームごとに合算してランキング化。",
+        };
+    }
+
     @Override
     public void onEnable() {
         main = this;

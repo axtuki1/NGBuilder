@@ -38,6 +38,11 @@ public class BuilderCommand implements TabExecutor {
         }
         if( args[0].equalsIgnoreCase("ng") ){
             new BuilderNGCmd().onCommand(sender,command,label,args);
+        }if( args[0].equalsIgnoreCase("ng") ){
+            new BuilderNGCmd().onCommand(sender,command,label,args);
+        } else if( args[0].equalsIgnoreCase("changelog") ){
+            sender.sendMessage(ChatColor.AQUA + NGBuilder.getMain().getDescription().getName() + ChatColor.GRAY + " v" + ChatColor.YELLOW + NGBuilder.getMain().getDescription().getVersion() + ChatColor.WHITE + " ChangeLog:");
+            sender.sendMessage(NGBuilder.getChangeLog());
         } else if( sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
             if( args[0].equalsIgnoreCase("start") ){
                 if( GameStatus.getStatus().equals(GameStatus.End) ){
@@ -80,6 +85,14 @@ public class BuilderCommand implements TabExecutor {
             } else if(args[0].equalsIgnoreCase("c")) {
                 BlockData bd = new BlockData(Utility.getItemInHand(((Player)sender)));
                 sender.sendMessage( bd.getMaterial().toString() + ":" + bd.getDataValue() + " -> " + NGData.NetherAndEndOnly.canUse(bd));
+            } else if(args[0].equalsIgnoreCase("skip")) {
+
+                BaseTask t = NGBuilder.getTask();
+                if( t instanceof MainTimerTask ){
+                    MainTimerTask task = (MainTimerTask) t;
+                    task.skip();
+                }
+
             } else if(args[0].equalsIgnoreCase("loc")) {
                 if (args.length == 2) {
                     Player p = (Player)sender;
@@ -308,7 +321,7 @@ public class BuilderCommand implements TabExecutor {
                                 }
                                 p.setGameMode(GameMode.ADVENTURE);
                                 p.setAllowFlight(true);
-                                p.setPlayerListName(p.getName() + " ");
+                                p.setPlayerListName(pd.getName() + " ");
                             } else if (pd.getPlayingType().equals(PlayerData.PlayingType.Spectator)) {
                                 pd.getPlayer().sendMessage(ChatColor.RED + "=====" + ChatColor.WHITE + " 観戦者として参加しています " + ChatColor.RED + "=====");
                                 pd.getPlayer().sendMessage(ChatColor.AQUA + "このセッション中のチャットは観戦者全体にのみ聞こえます。");
@@ -350,6 +363,7 @@ public class BuilderCommand implements TabExecutor {
         Utility.sendCmdHelp(sender, "/builder now", "現在のお題を表示します。");
         Utility.sendCmdHelp(sender, "/builder option <Key> <Value>", "設定を変更します。");
         Utility.sendCmdHelp(sender, "/builder theme <...>", "お題に関するコマンドです。");
+        Utility.sendCmdHelp(sender, "/builder style <SOLO|TEAM>", "ゲームモードを変更します。");
         Utility.sendCmdHelp(sender, "/builder perlist", "制約の確率を確認できます。");
         Utility.sendCmdHelp(sender, "/builder reload", "Config他の再読込を行います。");
     }
@@ -368,7 +382,7 @@ public class BuilderCommand implements TabExecutor {
                 }
             }
             for (String name : new String[]{
-                    "ng"
+                    "ng","changelog"
             }) {
                 if (name.toLowerCase().startsWith(args[0].toLowerCase())) {
                     out.add(name);

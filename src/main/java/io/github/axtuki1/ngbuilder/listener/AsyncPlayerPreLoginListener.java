@@ -23,10 +23,13 @@ public class AsyncPlayerPreLoginListener implements Listener {
         // 参加時
         GameConfig.WorldSpawnPoint.reload();
         Player p = e.getPlayer();
+        p.sendMessage(ChatColor.AQUA + NGBuilder.getMain().getDescription().getName() + ChatColor.GRAY + " v" + ChatColor.YELLOW + NGBuilder.getMain().getDescription().getVersion() + ChatColor.WHITE + " ChangeLog:");
+        p.sendMessage(NGBuilder.getChangeLog());
         p.setCollidable(false);
         p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard() );
         if( GameStatus.getStatus().equals(GameStatus.Playing) ){
             PlayerData pd = GamePlayers.getData(p.getUniqueId(), true);
+            p.setPlayerListName(pd.getName() + " ");
             if( pd == null ) {
                 p.setGameMode(GameMode.ADVENTURE);
                 p.setAllowFlight(true);
@@ -44,6 +47,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
                     p.setAllowFlight(true);
                     p.setScoreboard( Bukkit.getScoreboardManager().getNewScoreboard() );
                     p.setPlayerListName(ChatColor.WHITE + "[観戦] " + p.getName() + " ");
+                    p.sendMessage(ChatColor.GREEN + "====== 現在観戦モードです ======");
                     e.setJoinMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + Utility.myReplaceAll(ChatColor.YELLOW.toString(), "", e.getJoinMessage()));
                 }
                 p.teleport(GameConfig.WorldSpawnPoint.getLocation());
