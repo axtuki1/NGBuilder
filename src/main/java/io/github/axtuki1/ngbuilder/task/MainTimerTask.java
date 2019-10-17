@@ -3,14 +3,13 @@ package io.github.axtuki1.ngbuilder.task;
 import io.github.axtuki1.ngbuilder.GameConfig;
 import io.github.axtuki1.ngbuilder.GameStatus;
 import io.github.axtuki1.ngbuilder.NGBuilder;
-import io.github.axtuki1.ngbuilder.Utility;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import io.github.axtuki1.ngbuilder.comparator.RankComparator;
 import io.github.axtuki1.ngbuilder.player.GamePlayers;
 import io.github.axtuki1.ngbuilder.player.PlayerData;
 import io.github.axtuki1.ngbuilder.system.GameData;
 import io.github.axtuki1.ngbuilder.system.NGData;
 import io.github.axtuki1.ngbuilder.system.ThemeData;
-import io.github.axtuki1.ngbuilder.util.ActionBar;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -22,8 +21,6 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -346,6 +343,9 @@ public class MainTimerTask extends BaseTimerTask {
                 Bukkit.broadcastMessage(NGBuilder.getPrefix() + ChatColor.YELLOW + "ジャンル: " + ChatColor.GREEN + currentThemeData.getGenre() );
                 Utility.playSoundToAllPlayer(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             }
+            if( getSecondsMax() - limit == getSeconds() ){
+                Bukkit.broadcastMessage(NGBuilder.getPrefix() + ChatColor.GREEN + "解答の受付を開始しました。");
+            }
         }
     }
 
@@ -573,7 +573,7 @@ public class MainTimerTask extends BaseTimerTask {
         Bukkit.broadcastMessage("   " + ChatColor.YELLOW +"制約     " + ChatColor.GREEN + ": " + ChatColor.WHITE + currentNGData.getName() + ChatColor.YELLOW + " ["+df.format(currentNGData.getPriorityPer())+"]");
         Bukkit.broadcastMessage("");
         Bukkit.broadcastMessage(ChatColor.RED +"========================================================");
-        Utility.playSoundToAllPlayer(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+        Utility.playSoundToAllPlayer(Sound.ENTITY_ITEM_BREAK, 1, 1);
         for(Player p : Bukkit.getOnlinePlayers()){
             p.sendTitle( ChatColor.GREEN + currentThemeData.getTheme()  ,
                     ChatColor.GRAY + ">>> " + ChatColor.WHITE + "SKIP " + ChatColor.GRAY + ">>>",
@@ -841,7 +841,7 @@ public class MainTimerTask extends BaseTimerTask {
                 p.setGameMode(GameMode.ADVENTURE);
                 p.setAllowFlight(false);
                 p.getInventory().clear();
-                p.teleport( NGBuilder.getWorld().getSpawnLocation().add(0.5,0,0.5) );
+//                p.teleport( NGBuilder.getWorld().getSpawnLocation().add(0.5,0,0.5) );
             }
         }
 
@@ -989,13 +989,13 @@ public class MainTimerTask extends BaseTimerTask {
                 if(rank_point.get( map.get( pd.getColor() ) ) != null){
                     your_rank = rank_point.get(map.get( pd.getColor() ));
                 }
-                msg.add(ChatColor.GRAY + "-----------------------------------------------------------");
+                msg.add(ChatColor.GRAY + "-------------------------------------------------------------");
                 msg.add(ChatColor.GREEN + " "+ ( your_rank <= 0 ? "?" : your_rank ) +"位 " + pd.getColor() + pd.getColor().name() + ChatColor.GRAY + ": " + ChatColor.YELLOW + map.get( pd.getColor() ) +"pt");
                 pd.getPlayer().sendMessage(msg.toArray(new String[msg.size()]));
 
             }
         }
-        Bukkit.broadcastMessage(ChatColor.RED + "===========================================================");
+        Bukkit.broadcastMessage(ChatColor.RED + "=============================================================");
 
 
 

@@ -2,7 +2,7 @@ package io.github.axtuki1.ngbuilder.command;
 
 import io.github.axtuki1.ngbuilder.GameConfig;
 import io.github.axtuki1.ngbuilder.NGBuilder;
-import io.github.axtuki1.ngbuilder.Utility;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

@@ -1,7 +1,7 @@
 package io.github.axtuki1.ngbuilder.system;
 
 import io.github.axtuki1.ngbuilder.GameConfig;
-import io.github.axtuki1.ngbuilder.Utility;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -35,8 +35,8 @@ public enum NGData {
         }
 
         @Override
-        public double getBonus() {
-            return 2;
+        public double getDefaultBonus() {
+            return 1.5;
         }
 
         @Override
@@ -76,8 +76,8 @@ public enum NGData {
         }
 
         @Override
-        public double getBonus() {
-            return 1.6;
+        public double getDefaultBonus() {
+            return 1.8;
         }
 
         @Override
@@ -115,12 +115,7 @@ public enum NGData {
         public String getDescription() {
             return "水と溶岩の設置が禁止です。";
         }
-
-        @Override
-        public double getBonus() {
-            return 1.4;
-        }
-
+        
         @Override
         public int getPenalty() {
             return 200;
@@ -369,8 +364,8 @@ public enum NGData {
         }
 
         @Override
-        public double getBonus() {
-            return 1.7;
+        public double getDefaultBonus() {
+            return 1.5;
         }
     },
     OreDeny{
@@ -466,8 +461,8 @@ public enum NGData {
         }
 
         @Override
-        public double getBonus() {
-            return 1.2;
+        public double getDefaultBonus() {
+            return 1.5;
         }
     },
     CarpetOnly{
@@ -509,8 +504,8 @@ public enum NGData {
         }
 
         @Override
-        public double getBonus() {
-            return 2;
+        public double getDefaultBonus() {
+            return 1.8;
         }
     },
     WoolOnly{
@@ -549,11 +544,6 @@ public enum NGData {
             return Arrays.asList(
                     new BlockData(Material.WOOL, true)
             );
-        }
-
-        @Override
-        public double getBonus() {
-            return 1.1;
         }
     },
     GlassOnly{
@@ -598,8 +588,8 @@ public enum NGData {
         }
 
         @Override
-        public double getBonus() {
-            return 1.5;
+        public double getDefaultBonus() {
+            return 1.8;
         }
     },
     HalfBlockOnly{
@@ -646,8 +636,8 @@ public enum NGData {
         }
 
         @Override
-        public double getBonus() {
-            return 2;
+        public double getDefaultBonus() {
+            return 1.5;
         }
     },
     WoodOnly{
@@ -734,11 +724,7 @@ public enum NGData {
                     new BlockData(Material.NETHER_FENCE, true)
             );
         }
-
-        @Override
-        public double getBonus() {
-            return 2;
-        }
+        
     },
     CountDenyNormal{
         @Override
@@ -808,6 +794,11 @@ public enum NGData {
         }
 
         @Override
+        public double getDefaultBonus() {
+            return 1.5;
+        }
+
+        @Override
         public CountDenyMode getCountDenyMode() {
             return CountDenyMode.Hard;
         }
@@ -846,6 +837,11 @@ public enum NGData {
         @Override
         public CountDenyMode getCountDenyMode() {
             return CountDenyMode.Hardcore;
+        }
+
+        @Override
+        public double getDefaultBonus() {
+            return 1.8;
         }
     },
     StopTimeDeny{
@@ -958,8 +954,15 @@ public enum NGData {
      * Bonus倍率を返す。
      * @return
      */
-    public double getBonus(){
+    public double getDefaultBonus(){
         return 1;
+    }
+
+    public double getBonus(){
+        if(GameConfig.NGDataBonus.getConfigurationSection().get(name()) == null ){
+            return getDefaultBonus();
+        }
+        return GameConfig.NGDataBonus.getConfigurationSection().getDouble(name());
     }
 
     /**

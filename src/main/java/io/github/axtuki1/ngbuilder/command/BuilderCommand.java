@@ -9,6 +9,7 @@ import io.github.axtuki1.ngbuilder.system.NGData;
 import io.github.axtuki1.ngbuilder.task.BaseTask;
 import io.github.axtuki1.ngbuilder.task.BaseTimerTask;
 import io.github.axtuki1.ngbuilder.task.MainTimerTask;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -37,8 +38,6 @@ public class BuilderCommand implements TabExecutor {
             return true;
         }
         if( args[0].equalsIgnoreCase("ng") ){
-            new BuilderNGCmd().onCommand(sender,command,label,args);
-        }if( args[0].equalsIgnoreCase("ng") ){
             new BuilderNGCmd().onCommand(sender,command,label,args);
         } else if( args[0].equalsIgnoreCase("changelog") ){
             sender.sendMessage(ChatColor.AQUA + NGBuilder.getMain().getDescription().getName() + ChatColor.GRAY + " v" + ChatColor.YELLOW + NGBuilder.getMain().getDescription().getVersion() + ChatColor.WHITE + " ChangeLog:");
@@ -137,6 +136,8 @@ public class BuilderCommand implements TabExecutor {
                 }
             } else if( args[0].equalsIgnoreCase("spec") ){
                 new BuilderSpecCmd().onCommand(sender,command,label,args);
+            } else if( args[0].equalsIgnoreCase("team") ){
+                new BuilderTeamCmd().onCommand(sender,command,label,args);
             } else if( args[0].equalsIgnoreCase("style") ){
                 GameData.GameStyle s = GameData.GameStyle.valueOf(args[1]);
                 GameData.setStyle(s);
@@ -280,8 +281,16 @@ public class BuilderCommand implements TabExecutor {
                                 time
                         );
                         List<ChatColor> color = new ArrayList<>();
+                        int size = 0;
+                        for( PlayerData pd : GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player) ){
+                            if( pd.getColor().equals(ChatColor.WHITE) ){
+                                size++;
+                            } else {
+                                GameData.setStyle(GameData.GameStyle.TEAM);
+                            }
+                        }
                         if( GameData.getStyle().equals(GameData.GameStyle.TEAM) ){
-                            float half = GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player).size() / 2;
+                            float half = size / 2;
                             if( half <= 10 ){
                                 // 2チーム
                                 color.add(ChatColor.RED);
@@ -374,7 +383,7 @@ public class BuilderCommand implements TabExecutor {
         if( args.length == 1 ){
             if( sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
                 for (String name : new String[]{
-                        "start", "gmstart", "stop", "next", "init", "timer", "option", "spec", "list", "theme", "clean", "style", "played"
+                        "start", "gmstart", "stop", "next", "init", "timer", "option", "spec", "list", "theme", "clean", "style", "played", "team", "skip"
                 }) {
                     if (name.toLowerCase().startsWith(args[0].toLowerCase())) {
                         out.add(name);
@@ -412,6 +421,8 @@ public class BuilderCommand implements TabExecutor {
                 out = new BuilderOptionCmd().onTabComplete(sender, command, alias, args);
             } else if( args[0].equalsIgnoreCase("theme") ){
                 out = new BuilderThemeCmd().onTabComplete(sender, command, alias, args);
+            } else if( args[0].equalsIgnoreCase("team") ){
+                out = new BuilderTeamCmd().onTabComplete(sender, command, alias, args);
             } else if( args[0].equalsIgnoreCase("ng") ){
                 out = new BuilderNGCmd().onTabComplete(sender, command, alias, args);
             } else if( args[0].equalsIgnoreCase("debug") ){

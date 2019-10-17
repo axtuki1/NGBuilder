@@ -3,6 +3,7 @@ package io.github.axtuki1.ngbuilder;
 import io.github.axtuki1.ngbuilder.system.NGData;
 import io.github.axtuki1.ngbuilder.system.ThemeData;
 import io.github.axtuki1.ngbuilder.util.Config;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -336,6 +337,32 @@ public enum GameConfig {
         @Override
         public String getFileName() {
             return "NGDataSettings.yml";
+        }
+    },
+    NGDataBonus{
+        @Override
+        public String getName() {
+            return "各NGのボーナス";
+        }
+
+        @Override
+        public String getValue() {
+            return null;
+        }
+
+        @Override
+        public boolean isThemeList() {
+            return true;
+        }
+
+        @Override
+        public boolean canCommandChange() {
+            return false;
+        }
+
+        @Override
+        public String getFileName() {
+            return "NGDataBonus.yml";
         }
     },
     ThemeDataList{
@@ -811,6 +838,22 @@ public enum GameConfig {
 
     public void setNGDataPrioritys(HashMap<NGData, Integer> input){
         HashMap<String, Integer> out = new HashMap<>();
+        for( NGData ng : input.keySet() ){
+            out.put(ng.name(), input.get(ng));
+        }
+        set(out);
+    }
+
+    public HashMap<NGData, Double> getNGDataBonus(){
+        HashMap<NGData, Double> out = new HashMap<>();
+        for( NGData ng : NGData.values() ){
+            out.put(ng, ng.getBonus());
+        }
+        return out;
+    }
+
+    public void setNGDataBonus(HashMap<NGData, Double> input){
+        HashMap<String, Double> out = new HashMap<>();
         for( NGData ng : input.keySet() ){
             out.put(ng.name(), input.get(ng));
         }

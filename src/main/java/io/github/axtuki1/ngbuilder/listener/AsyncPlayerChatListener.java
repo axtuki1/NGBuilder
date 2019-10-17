@@ -2,7 +2,7 @@ package io.github.axtuki1.ngbuilder.listener;
 
 import io.github.axtuki1.ngbuilder.GameStatus;
 import io.github.axtuki1.ngbuilder.NGBuilder;
-import io.github.axtuki1.ngbuilder.Utility;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import io.github.axtuki1.ngbuilder.player.GamePlayers;
 import io.github.axtuki1.ngbuilder.player.PlayerData;
 import org.bukkit.Bukkit;

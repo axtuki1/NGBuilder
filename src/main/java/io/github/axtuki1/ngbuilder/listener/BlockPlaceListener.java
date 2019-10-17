@@ -3,18 +3,15 @@ package io.github.axtuki1.ngbuilder.listener;
 import io.github.axtuki1.ngbuilder.GameConfig;
 import io.github.axtuki1.ngbuilder.GameStatus;
 import io.github.axtuki1.ngbuilder.NGBuilder;
-import io.github.axtuki1.ngbuilder.Utility;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import io.github.axtuki1.ngbuilder.player.GamePlayers;
 import io.github.axtuki1.ngbuilder.player.PlayerData;
 import io.github.axtuki1.ngbuilder.system.BlockData;
 import io.github.axtuki1.ngbuilder.system.NGData;
 import io.github.axtuki1.ngbuilder.task.MainTimerTask;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,18 +19,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SpawnEggMeta;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class BlockPlaceListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)

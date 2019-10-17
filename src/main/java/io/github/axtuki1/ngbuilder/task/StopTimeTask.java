@@ -1,12 +1,9 @@
 package io.github.axtuki1.ngbuilder.task;
 
-import io.github.axtuki1.ngbuilder.GameConfig;
 import io.github.axtuki1.ngbuilder.NGBuilder;
-import io.github.axtuki1.ngbuilder.Utility;
 import io.github.axtuki1.ngbuilder.system.NGData;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class StopTimeTask extends BaseTask {
     StopTimeTask(NGBuilder pl) {
