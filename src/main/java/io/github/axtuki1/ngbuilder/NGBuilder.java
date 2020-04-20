@@ -29,7 +29,7 @@ public final class NGBuilder extends JavaPlugin {
 
     public static String[] getChangeLog(){
         return new String[]{
-                "1.14.4仮対応。新ブロックやID変更に追われて対応漏れアリ。"
+                "1.14.4仮対応。新ブロックやID変更に追われて対応漏れアリかも。"
         };
     }
 
