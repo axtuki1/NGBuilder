@@ -50,7 +50,7 @@ public class BuilderThemeCmd implements TabExecutor {
                     );
                     sender.sendMessage(NGBuilder.getPrefix() + "追加: "+td.getGenre()+": お題「"+td.getTheme()+"」難:"+td.getDifficulty()+" 倍:"+td.getBonusPer()+" 加:"+td.getBonusAdd()+"");
                     if( sender instanceof Player ){
-                        ((Player)sender).playSound(((Player)sender).getLocation(), Sound.BLOCK_NOTE_PLING, 1 , (float) 2);
+                        ((Player)sender).playSound(((Player)sender).getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1 , (float) 2);
                     }
                 } catch ( NumberFormatException e ){
                     sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "数値である場所が数値ではありません。");

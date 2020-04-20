@@ -82,12 +82,16 @@ public class BuilderPlayerListCmd implements TabExecutor {
             for( PlayerData pd : pls.values() ){
                 String addText = "";
                 if( pd.getPlayingType().equals(PlayerData.PlayingType.Player) ){
-                    senderPlayingList.append(pd.getName()).append(", ");
+                    senderPlayingList.append(pd.getName());
                 }
+                if( GamePlayers.getBuiltPlayers().contains(pd.getUUID()) ){
+                    senderPlayingList.append(ChatColor.GRAY).append("[built]");
+                }
+                senderPlayingList.append(ChatColor.GRAY).append(", ").append(ChatColor.WHITE);
             }
             String out = "";
             if( (senderPlayingList.length() - 2) >= 0 ){
-                out = senderPlayingList.substring(0, senderPlayingList.length() - 2);
+                out = senderPlayingList.substring(0, senderPlayingList.length() - 4);
             } else {
                 out = senderPlayingList.toString();
             }
@@ -111,7 +115,7 @@ public class BuilderPlayerListCmd implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return null;
+        return new ArrayList<>();
     }
 
 

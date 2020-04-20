@@ -1,5 +1,6 @@
 package io.github.axtuki1.ngbuilder.command;
 
+import io.github.axtuki1.ngbuilder.GameStatus;
 import io.github.axtuki1.ngbuilder.NGBuilder;
 import io.github.axtuki1.ngbuilder.util.Utility;
 import io.github.axtuki1.ngbuilder.player.GamePlayers;
@@ -20,6 +21,13 @@ public class BuilderSpecCmd implements TabExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if( args.length <= 1 ){
             sendCmdHelp((Player)sender);
+            return true;
+        }
+        if( GameStatus.getStatus().equals(GameStatus.End) ){
+            NGBuilder.init();
+        }
+        if( !GameStatus.getStatus().equals(GameStatus.Ready) ){
+            sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "待機状態ではありません。/builder initで初期化を行って下さい。");
             return true;
         }
         Player p = Bukkit.getPlayerExact( args[1] );

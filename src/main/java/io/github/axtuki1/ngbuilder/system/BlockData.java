@@ -13,25 +13,25 @@ public class BlockData {
     public BlockData(ItemStack item){
         material = item.getType();
         dataValue = item.getData().getData();
-        nonDataValue = false;
+        nonDataValue = true;
     }
 
     public BlockData(Block block){
         material = block.getType();
         dataValue = block.getData();
-        nonDataValue = false;
+        nonDataValue = true;
     }
 
     public BlockData( Material material, int dataValue ){
         this.material = material;
         this.dataValue = dataValue;
-        nonDataValue = false;
+        nonDataValue = true;
     }
 
     public BlockData(Material material) {
         this.material = material;
         this.dataValue = 0;
-        nonDataValue = false;
+        nonDataValue = true;
     }
 
     public BlockData(ItemStack item, boolean isNonDataValue){

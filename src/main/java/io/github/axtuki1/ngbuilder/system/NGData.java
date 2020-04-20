@@ -166,39 +166,37 @@ public enum NGData {
         public List<BlockData> getOnlyMaterial() {
             return Arrays.asList(
                     new BlockData(Material.NETHER_BRICK),
-                    new BlockData(Material.STEP, 6),
-                    new BlockData(Material.STEP, 7),
-                    new BlockData(Material.STEP, 14),
-                    new BlockData(Material.STEP, 15),
-                    new BlockData(Material.DOUBLE_STEP, 6),
-                    new BlockData(Material.DOUBLE_STEP, 7),
-                    new BlockData(Material.DOUBLE_STEP, 14),
-                    new BlockData(Material.DOUBLE_STEP, 15),
+                    new BlockData(Material.NETHER_BRICK_SLAB),
+                    new BlockData(Material.NETHER_BRICK_FENCE),
+                    new BlockData(Material.NETHER_BRICK_STAIRS),
+                    new BlockData(Material.NETHER_BRICK_WALL),
+                    new BlockData(Material.RED_NETHER_BRICK_SLAB),
+                    new BlockData(Material.RED_NETHER_BRICK_STAIRS),
+                    new BlockData(Material.RED_NETHER_BRICK_WALL),
                     new BlockData(Material.NETHER_BRICK_STAIRS, true),
                     new BlockData(Material.NETHERRACK),
-                    new BlockData(Material.RED_NETHER_BRICK),
                     new BlockData(Material.END_ROD, true),
                     new BlockData(Material.SOUL_SAND),
                     new BlockData(Material.GLOWSTONE),
                     new BlockData(Material.NETHER_WART_BLOCK),
+                    new BlockData(Material.NETHER_QUARTZ_ORE),
                     new BlockData(Material.QUARTZ_BLOCK, true),
                     new BlockData(Material.QUARTZ_STAIRS, true),
                     new BlockData(Material.END_CRYSTAL),
-                    new BlockData(Material.MAGMA),
+                    new BlockData(Material.MAGMA_BLOCK),
                     new BlockData(Material.PURPUR_BLOCK),
                     new BlockData(Material.PURPUR_PILLAR),
                     new BlockData(Material.PURPUR_SLAB, true),
-                    new BlockData(Material.PURPUR_DOUBLE_SLAB, true),
                     new BlockData(Material.PURPUR_STAIRS, true),
                     new BlockData(Material.CHORUS_PLANT),
                     new BlockData(Material.CHORUS_FLOWER),
-                    new BlockData(Material.NETHER_FENCE),
                     new BlockData(Material.OBSIDIAN),
-                    new BlockData(Material.ENDER_STONE),
-                    new BlockData(Material.END_BRICKS),
-                    new BlockData(Material.LAVA, true),
-                    new BlockData(Material.LAVA_BUCKET, true),
-                    new BlockData(Material.STATIONARY_LAVA, true)
+                    new BlockData(Material.END_STONE),
+                    new BlockData(Material.END_STONE_BRICK_SLAB),
+                    new BlockData(Material.END_STONE_BRICK_STAIRS),
+                    new BlockData(Material.END_STONE_BRICK_WALL),
+                    new BlockData(Material.END_STONE_BRICKS),
+                    new BlockData(Material.LAVA)
 //                    new BlockData(Material)
             );
         }
@@ -308,23 +306,11 @@ public enum NGData {
 
         @Override
         public List<BlockData> getDenyMaterial() {
-            return Arrays.asList(
-                    new BlockData(Material.COBBLESTONE_STAIRS, true),
-                    new BlockData(Material.SMOOTH_STAIRS, true),
-                    new BlockData(Material.WOOD_STAIRS, true),
-                    new BlockData(Material.BIRCH_WOOD_STAIRS, true),
-                    new BlockData(Material.JUNGLE_WOOD_STAIRS, true),
-                    new BlockData(Material.SPRUCE_WOOD_STAIRS, true),
-                    new BlockData(Material.ACACIA_STAIRS, true),
-                    new BlockData(Material.DARK_OAK_STAIRS, true),
-                    new BlockData(Material.RED_SANDSTONE_STAIRS, true),
-                    new BlockData(Material.SANDSTONE_STAIRS, true),
-                    new BlockData(Material.NETHER_BRICK_STAIRS, true),
-                    new BlockData(Material.QUARTZ_STAIRS, true),
-                    new BlockData(Material.BRICK_STAIRS, true),
-                    new BlockData(Material.PURPUR_STAIRS, true)
-
-            );
+            List<BlockData> out = new ArrayList<>();
+            for( Material m : Material.values() ){
+                if( m.toString().contains("_STAIRS") ) out.add( new BlockData(m) );
+            }
+            return out;
         }
     },
     StairsOnly{
@@ -401,15 +387,11 @@ public enum NGData {
 
         @Override
         public List<BlockData> getDenyMaterial() {
-            return Arrays.asList(
-                    new BlockData(Material.IRON_ORE),
-                    new BlockData(Material.GOLD_ORE),
-                    new BlockData(Material.COAL_ORE),
-                    new BlockData(Material.EMERALD_ORE),
-                    new BlockData(Material.REDSTONE_ORE),
-                    new BlockData(Material.DIAMOND_ORE),
-                    new BlockData(Material.LAPIS_ORE),
-                    new BlockData(Material.QUARTZ_ORE),
+            List<BlockData> out = new ArrayList<>();
+            for( Material m : Material.values() ){
+                if( m.toString().contains("_ORE") ) out.add( new BlockData(m) );
+            }
+            out.addAll(Arrays.asList(
                     new BlockData(Material.IRON_BLOCK),
                     new BlockData(Material.GOLD_BLOCK),
                     new BlockData(Material.COAL_BLOCK),
@@ -418,10 +400,10 @@ public enum NGData {
                     new BlockData(Material.REDSTONE_BLOCK),
                     new BlockData(Material.LAPIS_BLOCK),
                     new BlockData(Material.QUARTZ_BLOCK),
-                    new BlockData(Material.STEP, 14),
-                    new BlockData(Material.STEP, 7),
-                    new BlockData(Material.DOUBLE_STEP, 7)
-            );
+                    new BlockData(Material.QUARTZ_STAIRS),
+                    new BlockData(Material.QUARTZ_SLAB)
+            ));
+            return out;
         }
     },
     OreOnly{
@@ -498,9 +480,11 @@ public enum NGData {
 
         @Override
         public List<BlockData> getOnlyMaterial() {
-            return Arrays.asList(
-                    new BlockData(Material.CARPET, true)
-            );
+            List<BlockData> out = new ArrayList<>();
+            for( Material m : Material.values() ){
+                if( m.toString().contains("_CARPET") ) out.add( new BlockData(m) );
+            }
+            return out;
         }
 
         @Override
@@ -541,9 +525,11 @@ public enum NGData {
 
         @Override
         public List<BlockData> getOnlyMaterial() {
-            return Arrays.asList(
-                    new BlockData(Material.WOOL, true)
-            );
+            List<BlockData> out = new ArrayList<>();
+            for( Material m : Material.values() ){
+                if( m.toString().contains("_WOOL") ) out.add( new BlockData(m) );
+            }
+            return out;
         }
     },
     GlassOnly{
@@ -579,12 +565,15 @@ public enum NGData {
 
         @Override
         public List<BlockData> getOnlyMaterial() {
-            return Arrays.asList(
+            List<BlockData> out = new ArrayList<>();
+            for( Material m : Material.values() ){
+                if( m.toString().contains("_GLASS") ) out.add( new BlockData(m) );
+            }
+            out.addAll(Arrays.asList(
                     new BlockData(Material.GLASS, true),
-                    new BlockData(Material.STAINED_GLASS, true),
-                    new BlockData(Material.STAINED_GLASS_PANE, true),
-                    new BlockData(Material.THIN_GLASS, true)
-            );
+                    new BlockData(Material.GLASS_PANE, true)
+            ));
+            return out;
         }
 
         @Override
@@ -625,14 +614,11 @@ public enum NGData {
 
         @Override
         public List<BlockData> getOnlyMaterial() {
-            return Arrays.asList(
-                    new BlockData(Material.STEP, true),
-                    new BlockData(Material.WOOD_STEP, true),
-                    new BlockData(Material.WOOD_DOUBLE_STEP, true),
-                    new BlockData(Material.DOUBLE_STEP, true),
-                    new BlockData(Material.PURPUR_SLAB, true),
-                    new BlockData(Material.PURPUR_DOUBLE_SLAB, true)
-            );
+            List<BlockData> out = new ArrayList<>();
+            for( Material m : Material.values() ){
+                if( m.toString().contains("_SLAB") ) out.add( new BlockData(m) );
+            }
+            return out;
         }
 
         @Override
@@ -673,56 +659,89 @@ public enum NGData {
 
         @Override
         public List<BlockData> getOnlyMaterial() {
-            return Arrays.asList(
-                    new BlockData(Material.LEAVES, true),
-                    new BlockData(Material.LEAVES_2, true),
 
-                    new BlockData(Material.LOG, true),
-                    new BlockData(Material.LOG_2, true),
+            List<BlockData> out = new ArrayList<>();
+            for( Material m : Material.values() ){
+                if(
+                        m.toString().contains("_LEAVES") ||
+                        m.toString().contains("_LOG") ||
+                        m.toString().contains("_WOOD") ||
+                        m.toString().contains("_PLANKS") ||
+                        m.toString().contains("_PRESSURE_PLATE")
+                ) {
+                    out.add( new BlockData(m) );
+                }
+            }
 
-                    new BlockData(Material.WOOD, true),
+            out.remove(new BlockData(Material.IRON_TRAPDOOR));
+            out.remove(new BlockData(Material.STONE_PRESSURE_PLATE));
+            out.remove(new BlockData(Material.LIGHT_WEIGHTED_PRESSURE_PLATE));
+            out.remove(new BlockData(Material.HEAVY_WEIGHTED_PRESSURE_PLATE));
+            out.remove(new BlockData(Material.STONE_BUTTON));
 
-                    new BlockData(Material.WOOD_STEP, true),
-                    new BlockData(Material.WOOD_DOUBLE_STEP, true),
 
-                    new BlockData(Material.WOOD_STAIRS, true),
+            out.addAll(Arrays.asList(
+                    new BlockData(Material.OAK_STAIRS),
                     new BlockData(Material.DARK_OAK_STAIRS, true),
-                    new BlockData(Material.JUNGLE_WOOD_STAIRS, true),
+                    new BlockData(Material.DARK_OAK_STAIRS),
                     new BlockData(Material.ACACIA_STAIRS, true),
-                    new BlockData(Material.SPRUCE_WOOD_STAIRS, true),
-                    new BlockData(Material.BIRCH_WOOD_STAIRS, true),
-
-                    new BlockData(Material.TRAP_DOOR, true),
+                    new BlockData(Material.OAK_STAIRS),
 
                     new BlockData(Material.CHEST, true),
                     new BlockData(Material.TRAPPED_CHEST, true),
 
-                    new BlockData(Material.WOODEN_DOOR, true),
+                    new BlockData(Material.OAK_DOOR, true),
                     new BlockData(Material.SPRUCE_DOOR, true),
                     new BlockData(Material.BIRCH_DOOR, true),
                     new BlockData(Material.JUNGLE_DOOR, true),
                     new BlockData(Material.ACACIA_DOOR, true),
                     new BlockData(Material.DARK_OAK_DOOR, true),
 
-                    new BlockData(Material.FENCE, true),
+                    new BlockData(Material.OAK_SLAB, true),
+                    new BlockData(Material.SPRUCE_SLAB, true),
+                    new BlockData(Material.BIRCH_SLAB, true),
+                    new BlockData(Material.JUNGLE_SLAB, true),
+                    new BlockData(Material.ACACIA_SLAB, true),
+                    new BlockData(Material.DARK_OAK_SLAB, true),
+
+                    new BlockData(Material.STRIPPED_OAK_LOG, true),
+                    new BlockData(Material.STRIPPED_OAK_WOOD, true),
+                    new BlockData(Material.STRIPPED_SPRUCE_LOG, true),
+                    new BlockData(Material.STRIPPED_SPRUCE_WOOD, true),
+                    new BlockData(Material.STRIPPED_BIRCH_LOG, true),
+                    new BlockData(Material.STRIPPED_BIRCH_WOOD, true),
+                    new BlockData(Material.STRIPPED_JUNGLE_LOG, true),
+                    new BlockData(Material.STRIPPED_JUNGLE_WOOD, true),
+                    new BlockData(Material.STRIPPED_ACACIA_LOG, true),
+                    new BlockData(Material.STRIPPED_ACACIA_WOOD, true),
+                    new BlockData(Material.STRIPPED_DARK_OAK_LOG, true),
+                    new BlockData(Material.STRIPPED_DARK_OAK_WOOD, true),
+
+                    new BlockData(Material.OAK_TRAPDOOR, true),
+                    new BlockData(Material.SPRUCE_TRAPDOOR, true),
+                    new BlockData(Material.BIRCH_TRAPDOOR, true),
+                    new BlockData(Material.JUNGLE_TRAPDOOR, true),
+                    new BlockData(Material.ACACIA_TRAPDOOR, true),
+                    new BlockData(Material.DARK_OAK_TRAPDOOR, true),
+
+                    new BlockData(Material.OAK_FENCE, true),
                     new BlockData(Material.SPRUCE_FENCE, true),
                     new BlockData(Material.BIRCH_FENCE, true),
                     new BlockData(Material.JUNGLE_FENCE, true),
                     new BlockData(Material.ACACIA_FENCE, true),
                     new BlockData(Material.DARK_OAK_FENCE, true),
 
-                    new BlockData(Material.FENCE_GATE, true),
+                    new BlockData(Material.OAK_FENCE_GATE, true),
                     new BlockData(Material.SPRUCE_FENCE_GATE, true),
                     new BlockData(Material.BIRCH_FENCE_GATE, true),
                     new BlockData(Material.JUNGLE_FENCE_GATE, true),
                     new BlockData(Material.ACACIA_FENCE_GATE, true),
-                    new BlockData(Material.DARK_OAK_FENCE_GATE, true),
+                    new BlockData(Material.DARK_OAK_FENCE_GATE, true)
+                    ));
 
-                    new BlockData(Material.WOOD_PLATE, true),
-                    new BlockData(Material.WOOD_BUTTON, true),
+            return out;
 
-                    new BlockData(Material.NETHER_FENCE, true)
-            );
+
         }
         
     },

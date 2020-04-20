@@ -38,10 +38,10 @@ public class AsyncPlayerChatListener implements Listener {
         }
         if( !GameStatus.getStatus().equals(GameStatus.Ready) && !GameStatus.getStatus().equals(GameStatus.End) ){
             // 観戦
-            if(GamePlayers.isSpectator(pd)){
-                NGBuilder.sendWatcher(ChatColor.WHITE + "[観戦] <" + e.getPlayer().getName() + "> " + e.getMessage());
-                return;
-            }
+//            if(GamePlayers.isSpectator(pd)){
+//                NGBuilder.sendWatcher(ChatColor.WHITE + "[観戦] <" + e.getPlayer().getName() + "> " + e.getMessage());
+//                return;
+//            }
         }
 
         try{

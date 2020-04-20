@@ -115,19 +115,19 @@ public class BuilderCommand implements TabExecutor {
                     GamePlayers.addSettingPlayer(p.getUniqueId());
 
                     // point1
-                    ItemStack item = new ItemStack(Material.WOOL, 1, (byte) 6);
+                    ItemStack item = new ItemStack(Material.PURPLE_WOOL, 1);
                     ItemMeta meta = item.getItemMeta();
                     meta.setDisplayName(ChatColor.LIGHT_PURPLE + "建築可能エリア Point1");
                     item.setItemMeta(meta);
                     p.getInventory().addItem(item);
 
-                    item = new ItemStack(Material.WOOL, 1, (byte) 11);
+                    item = new ItemStack(Material.LIGHT_BLUE_WOOL, 1);
                     meta = item.getItemMeta();
                     meta.setDisplayName(ChatColor.AQUA + "建築可能エリア Point2");
                     item.setItemMeta(meta);
                     p.getInventory().addItem(item);
 
-//                    item = new ItemStack( Material.WOOL,1, (byte)4);
+//                    item = new ItemStack( Material.YELLOW_WOOL,1);
 //                    meta = item.getItemMeta();
 //                    meta.setDisplayName(ChatColor.GOLD + "建築者TPポイント");
 //                    item.setItemMeta(meta);

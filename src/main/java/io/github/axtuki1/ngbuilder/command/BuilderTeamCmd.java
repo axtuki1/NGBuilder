@@ -21,7 +21,6 @@ public class BuilderTeamCmd implements TabExecutor {
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if( args.length == 1 ){
-
         } else if( args[1].equalsIgnoreCase("set") ){
             if( args.length <= 2 ){
 

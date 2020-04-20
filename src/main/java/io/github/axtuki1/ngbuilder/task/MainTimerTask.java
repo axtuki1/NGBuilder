@@ -184,6 +184,8 @@ public class MainTimerTask extends BaseTimerTask {
         }
         Bukkit.broadcastMessage("");
         Bukkit.broadcastMessage(ChatColor.RED +"========================================================");
+        Bukkit.broadcastMessage(ChatColor.AQUA.toString()+limit+"秒後に解答の受付を開始します。");
+        Bukkit.broadcastMessage(ChatColor.AQUA.toString()+"それ以前に解答しても判定されません。");
         builderPlayerData.getPlayer().sendMessage(ChatColor.AQUA + "/cleanで白紙に戻すことができます。");
         for( Player p : Bukkit.getOnlinePlayers() ){
             PlayerData pd = GamePlayers.getData(p);
@@ -380,7 +382,7 @@ public class MainTimerTask extends BaseTimerTask {
 
             ob.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-            ob.setDisplayName("情報 ["+ Utility.getPingString(p)+ChatColor.WHITE+"]");
+            ob.setDisplayName("NGBuilder ["+ Utility.getPingString(p)+ChatColor.WHITE+"]");
 
 
             PlayerData pd = GamePlayers.getData(p);
@@ -390,19 +392,24 @@ public class MainTimerTask extends BaseTimerTask {
             if( pd.getPlayingType().equals(PlayerData.PlayingType.Player) ){
                 if( !pd.isHiddenInfo() ){
                     if( pd.isBuilder() ){
-                        set.add("ｼﾞｬﾝﾙ: " + ChatColor.GREEN + currentThemeData.getGenre());
-                        set.add("お題: " + ChatColor.GREEN + currentThemeData.getTheme());
-                        set.add("制約: " + ChatColor.GREEN + currentNGData.getShortName());
+                        set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "ジャンル");
+                        set.add("  " + ChatColor.GREEN + currentThemeData.getGenre());
+                        set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "お題");
+                        set.add("  " + ChatColor.GREEN + currentThemeData.getTheme());
+                        set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "制約");
+                        set.add("  " + ChatColor.GREEN + currentNGData.getShortName());
                         if( !isEndProcessing() ){
                             if( subTask != null ){
                                 if( subTask instanceof BlockCountTask ){
-                                    set.add("総ブロック: " + ChatColor.GREEN + ((BlockCountTask)subTask).getCount() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
+                                    set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "総ブロック");
+                                    set.add("  " + ChatColor.GREEN + ((BlockCountTask)subTask).getCount() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
                                     if( ((BlockCountTask)subTask).getCount() > currentNGData.getCount() ){
                                         NGEnd();
                                     }
                                 }
                                 if( subTask instanceof StopTimeTask ){
-                                    set.add("猶予: " + ChatColor.GREEN + ((StopTimeTask)subTask).getStopTime() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
+                                    set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "猶予");
+                                    set.add("  " + ChatColor.GREEN + ((StopTimeTask)subTask).getStopTime() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
                                     if( ((StopTimeTask)subTask).getStopTime() >= currentNGData.getCount() ){
                                         NGEnd();
                                     }
@@ -412,9 +419,10 @@ public class MainTimerTask extends BaseTimerTask {
                     }
                 }
                 if( !pd.getColor().equals(ChatColor.WHITE) ){
-                    set.add("所属: " + pd.getColorName());
+                    set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "所属");
+                    set.add("  " + pd.getColorName());
                 }
-                set.add("得点: " + ChatColor.GREEN + pd.getPoint());
+                set.add(ChatColor.YELLOW + "得点: " + ChatColor.GREEN + pd.getPoint());
 
 //                if( getCurrentNGData() != null ){
 //                    if( !getCurrentNGData().canUse(Utility.getItemInHand(p)) && Utility.getItemInHand(p).getType() != Material.AIR ){
@@ -425,22 +433,29 @@ public class MainTimerTask extends BaseTimerTask {
 //                }
 
             } else if( pd.getPlayingType().equals(PlayerData.PlayingType.GameMaster) ){
-                set.add("役職: " + ChatColor.YELLOW + "[GameMaster]");
-                set.add("参加人数: " + ChatColor.AQUA + Player_Count);
-                set.add("観戦者数: " + ChatColor.AQUA + Spectator_Count);
+                set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "役職");
+                set.add("  " + ChatColor.YELLOW + "[GameMaster]");
+                set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "参加人数");
+                set.add("  " + ChatColor.AQUA + Player_Count);
+                set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "観戦者数");
+                set.add("  " + ChatColor.AQUA + Spectator_Count);
                 if( !pd.isHiddenInfo() ){
-                    set.add("お題: " + ChatColor.GREEN + currentThemeData.getTheme());
-                    set.add("制約: " + ChatColor.GREEN + currentNGData.getShortName());
+                    set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "お題");
+                    set.add("  " + ChatColor.GREEN + currentThemeData.getTheme());
+                    set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "制約");
+                    set.add("  " + ChatColor.GREEN + currentNGData.getShortName());
                     if( !isEndProcessing() ){
                         if( subTask != null ){
                             if( subTask instanceof BlockCountTask ){
-                                set.add("総ブロック: " + ChatColor.GREEN + ((BlockCountTask)subTask).getCount() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
+                                set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "総ブロック");
+                                set.add("  " + ChatColor.GREEN + ((BlockCountTask)subTask).getCount() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
                                 if( ((BlockCountTask)subTask).getCount() > currentNGData.getCount() ){
                                     NGEnd();
                                 }
                             }
                             if( subTask instanceof StopTimeTask ){
-                                set.add("猶予: " + ChatColor.GREEN + ((StopTimeTask)subTask).getStopTime() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
+                                set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "猶予");
+                                set.add("  " + ChatColor.GREEN + ((StopTimeTask)subTask).getStopTime() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
                                 if( ((StopTimeTask)subTask).getStopTime() >= currentNGData.getCount() ){
                                     NGEnd();
                                 }
@@ -448,8 +463,6 @@ public class MainTimerTask extends BaseTimerTask {
                         }
                     }
                 }
-            } else {
-                set.add("役職: [なし]");
             }
 
 //            if( Boolean.parseBoolean( String.valueOf(pd.getDebug().get("SeeNearPlayer")) ) ){
@@ -470,17 +483,17 @@ public class MainTimerTask extends BaseTimerTask {
                 set.addAll(addList);
             }
 
-            if( getSecondsElapsed() < limit ){
-                set.add(ChatColor.RED + "判定制限中");
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "現在回答しても判定されません"));
-            } else if( getSecondsElapsed() < limit + 5 ){
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
-            }
-
             if( !isInfinity  ){
 //                SimpleDateFormat formatter = new SimpleDateFormat("m:ss");
 //                formatter.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
-                set.add("残り時間: " + Utility.getColor(getSeconds(), getSecondsMax()) + Utility.convSecToTime((int) getSeconds()));
+                set.add(ChatColor.YELLOW + "残り時間: "+Utility.getColor(getSeconds(), getSecondsMax()) + Utility.convSecToTime((int) getSeconds()));
+            }
+
+            if( getSecondsElapsed() < limit ){
+                set.add(ChatColor.RED + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "判定制限中 <<< ");
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "現在回答しても判定されません"));
+            } else if( getSecondsElapsed() < limit + 5 ){
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
             }
 
             if( pd.getPlayingType().equals(PlayerData.PlayingType.Spectator) ){
@@ -791,6 +804,21 @@ public class MainTimerTask extends BaseTimerTask {
 
     @Override
     public void onChat(AsyncPlayerChatEvent e) {
+        PlayerData pd = GamePlayers.getData(e.getPlayer().getUniqueId());
+        if(GamePlayers.isSpectator(pd)){
+            if(getCurrentThemeData().getTheme().equalsIgnoreCase( e.getMessage() )){
+                NGBuilder.sendWatcher(ChatColor.WHITE + "[観戦] <" + e.getPlayer().getName() + "> "+ChatColor.GREEN+"[***正解***]");
+                return;
+            }
+            NGBuilder.sendWatcher(ChatColor.WHITE + "[観戦] <" + e.getPlayer().getName() + "> " + e.getMessage());
+            return;
+        }
+        if(builderPlayerData.getUUID().equals(e.getPlayer().getUniqueId())){
+            if( getCurrentThemeData().getTheme().equalsIgnoreCase( e.getMessage() ) ){
+                Bukkit.broadcastMessage( "<"+e.getPlayer().getName()+"> " +ChatColor.GREEN+"[***正解***]" );
+                return;
+            }
+        }
         Bukkit.broadcastMessage( "<"+e.getPlayer().getName()+"> " + e.getMessage() );
         if( getSecondsElapsed() >= limit ){
             if( !builderPlayerData.getUUID().equals(e.getPlayer().getUniqueId()) && !endProcessing ){

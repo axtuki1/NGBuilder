@@ -178,7 +178,8 @@ public class BuilderOptionCmd implements TabExecutor {
             }
         } else if(args.length == 3){
             if( !args[1].equalsIgnoreCase("GameTime") &&
-                    !args[1].equalsIgnoreCase("Difficulty")  ){
+                    !args[1].equalsIgnoreCase("Difficulty")&&
+                    !args[1].equalsIgnoreCase("Cycle")  ){
                 for (String name : new String[]{
                         "true","false"
                 }) {

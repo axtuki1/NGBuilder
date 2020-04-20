@@ -55,8 +55,6 @@ public class BuilderNGCmd implements TabExecutor {
             } catch ( NumberFormatException e ){
                 sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "数値である場所が数値ではありません。");
             }
-
-
         }
         if( args[1].equalsIgnoreCase("Bonus") ) {
 
