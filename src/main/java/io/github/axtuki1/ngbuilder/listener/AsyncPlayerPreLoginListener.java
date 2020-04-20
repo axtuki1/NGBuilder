@@ -22,8 +22,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
         // 参加時
         GameConfig.WorldSpawnPoint.reload();
         Player p = e.getPlayer();
-        p.sendMessage(ChatColor.AQUA + NGBuilder.getMain().getDescription().getName() + ChatColor.GRAY + " v" + ChatColor.YELLOW + NGBuilder.getMain().getDescription().getVersion() + ChatColor.WHITE + " ChangeLog:");
-        p.sendMessage(NGBuilder.getChangeLog());
+        p.sendMessage(ChatColor.AQUA + NGBuilder.getMain().getDescription().getName() + ChatColor.GRAY + " v" + ChatColor.YELLOW + NGBuilder.getMain().getDescription().getVersion());
         p.sendMessage(ChatColor.GREEN + "このプラグインでは[言語設定] > [Unicodeフォント強制: ON]を推奨します。");
         p.setCollidable(false);
         p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard() );
