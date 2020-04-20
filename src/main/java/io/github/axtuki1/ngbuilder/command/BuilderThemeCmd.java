@@ -2,11 +2,8 @@ package io.github.axtuki1.ngbuilder.command;
 
 import io.github.axtuki1.ngbuilder.GameConfig;
 import io.github.axtuki1.ngbuilder.NGBuilder;
-import io.github.axtuki1.ngbuilder.Utility;
-import io.github.axtuki1.ngbuilder.player.GamePlayers;
-import io.github.axtuki1.ngbuilder.player.PlayerData;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import io.github.axtuki1.ngbuilder.system.ThemeData;
-import io.github.axtuki1.ngbuilder.task.MainTimerTask;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -16,14 +13,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BuilderThemeCmd implements TabExecutor {
 
@@ -56,7 +50,7 @@ public class BuilderThemeCmd implements TabExecutor {
                     );
                     sender.sendMessage(NGBuilder.getPrefix() + "追加: "+td.getGenre()+": お題「"+td.getTheme()+"」難:"+td.getDifficulty()+" 倍:"+td.getBonusPer()+" 加:"+td.getBonusAdd()+"");
                     if( sender instanceof Player ){
-                        ((Player)sender).playSound(((Player)sender).getLocation(), Sound.BLOCK_NOTE_PLING, 1 , (float) 2);
+                        ((Player)sender).playSound(((Player)sender).getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1 , (float) 2);
                     }
                 } catch ( NumberFormatException e ){
                     sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "数値である場所が数値ではありません。");

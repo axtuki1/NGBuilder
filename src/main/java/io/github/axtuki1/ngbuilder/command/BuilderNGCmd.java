@@ -2,15 +2,13 @@ package io.github.axtuki1.ngbuilder.command;
 
 import io.github.axtuki1.ngbuilder.GameConfig;
 import io.github.axtuki1.ngbuilder.NGBuilder;
-import io.github.axtuki1.ngbuilder.Utility;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import io.github.axtuki1.ngbuilder.system.NGData;
-import io.github.axtuki1.ngbuilder.system.ThemeData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
-import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -57,6 +55,53 @@ public class BuilderNGCmd implements TabExecutor {
             } catch ( NumberFormatException e ){
                 sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "数値である場所が数値ではありません。");
             }
+        }
+        if( args[1].equalsIgnoreCase("Bonus") ) {
+
+            if( !sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
+                sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "あなたはこのコマンドを実行できません。");
+            }
+
+            if (args.length <= 2) {
+                sendCmdHelp(sender);
+                return true;
+            }
+
+            if( args[2].equalsIgnoreCase("reset") ){
+                try{
+                    HashMap<NGData, Double> input = GameConfig.NGDataBonus.getNGDataBonus();
+                    for ( NGData ng : NGData.values() ){
+                        input.put(ng, ng.getDefaultBonus());
+                    }
+                    GameConfig.NGDataBonus.setNGDataBonus(input);
+                    sender.sendMessage(NGBuilder.getPrefix() + "ボーナスの値をデフォルトに戻しました。" );
+                } catch ( NumberFormatException e ){
+                    sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "数値である場所が数値ではありません。");
+                }
+                return true;
+            }
+
+            if (args.length <= 3) {
+                sendCmdHelp(sender);
+                return true;
+            }
+
+            NGData ng = null;
+
+            try{
+                ng = NGData.valueOf(args[2]);
+            } catch (IllegalArgumentException e){
+                sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "そのNGはありません。");
+            }
+
+            try{
+                HashMap<NGData, Double> input = GameConfig.NGDataBonus.getNGDataBonus();
+                input.put(ng, Double.parseDouble(args[3]));
+                GameConfig.NGDataBonus.setNGDataBonus(input);
+                sender.sendMessage(NGBuilder.getPrefix() + "ボーナス倍率変更: " + ng.getName() + " : " + ng.getBonus() );
+            } catch ( NumberFormatException e ){
+                sender.sendMessage(NGBuilder.getPrefix() + ChatColor.RED + "数値である場所が数値ではありません。");
+            }
 
 
         }
@@ -91,7 +136,7 @@ public class BuilderNGCmd implements TabExecutor {
                 if( item.getPriority() <= 0 ){
                     color = ChatColor.GRAY;
                 }
-                String send = color + item.getName() + ChatColor.RESET + ChatColor.GREEN + ": " + ChatColor.YELLOW + "[ "+item.getPriority()+" / " + df.format(perList.get(item))+" ]";
+                String send = color + item.getName() + ChatColor.RESET + ChatColor.GREEN + ": " + ChatColor.YELLOW + "[ "+item.getPriority()+" / " + df.format(perList.get(item))+" | x"+item.getBonus()+" ]";
                 if( sender instanceof Player && sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
                     TextComponent base = new TextComponent(""), remove = new TextComponent( "[X]" ), reset = new TextComponent( "[R]" );
                     remove.setBold(true);
@@ -125,7 +170,8 @@ public class BuilderNGCmd implements TabExecutor {
 
     private void sendCmdHelp(CommandSender sender) {
         if (sender.hasPermission(NGBuilder.getGameMasterPermission())) {
-            Utility.sendCmdHelp(sender, "/builder ng Priority <NG> <優先度>", "お題を追加します。(スペース使用不可)");
+            Utility.sendCmdHelp(sender, "/builder ng Priority <NG> <優先度>", "優先度を設定します。");
+            Utility.sendCmdHelp(sender, "/builder ng Bonus <NG> <倍率>", "ボーナス倍率を設定します。");
         }
         Utility.sendCmdHelp(sender, "/builder ng list", "NGのリストと出現率が参照できます。");
         Utility.sendCmdHelp(sender, "/builder ng info <NG>", "NGの説明が参照できます。");
@@ -138,7 +184,7 @@ public class BuilderNGCmd implements TabExecutor {
         if( args.length == 2 ){
             if(sender.hasPermission(NGBuilder.getGameMasterPermission())){
                 for (String name : new String[]{
-                        "Priority"
+                        "Priority", "Bonus"
                 }) {
                     if (name.toLowerCase().startsWith(args[1].toLowerCase())) {
                         out.add(name);
@@ -153,8 +199,8 @@ public class BuilderNGCmd implements TabExecutor {
                 }
             }
         } else if( args.length == 3 ){
-            if( args[1].equalsIgnoreCase("Priority") || args[1].equalsIgnoreCase("info") ){
-                if( args[1].equalsIgnoreCase("Priority") && !sender.hasPermission(NGBuilder.getGameMasterPermission() )) return out;
+            if( args[1].equalsIgnoreCase("Priority") ||args[1].equalsIgnoreCase("Bonus") || args[1].equalsIgnoreCase("info") ){
+                if( (args[1].equalsIgnoreCase("Priority")||args[1].equalsIgnoreCase("Bonus")) && !sender.hasPermission(NGBuilder.getGameMasterPermission() )) return out;
                 for (NGData ng : NGData.values()) {
                     if (ng.name().toLowerCase().startsWith(args[2].toLowerCase())) {
                         out.add(ng.name());

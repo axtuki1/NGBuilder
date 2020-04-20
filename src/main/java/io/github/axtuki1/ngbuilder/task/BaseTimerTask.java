@@ -75,7 +75,7 @@ public class BaseTimerTask extends BaseTask {
     }
 
     public void updateTime() {
-        if( nextCount == 20 ){
+        if( nextCount == 10 ){
             if ( !isPaused ) {
                 secondsRest--;
                 incrementElapse();
@@ -171,7 +171,7 @@ public class BaseTimerTask extends BaseTask {
      */
     public void start(){
         if( task == null ){
-            task = runTaskTimer(plugin, 1L, 1L);
+            task = runTaskTimer(plugin, 2L, 2L);
         }
 //        JinroScoreboard.getScoreboard().resetScores(
 //                Utility.getColor(0, getSecondsMax()) + "残り時間: 0秒"

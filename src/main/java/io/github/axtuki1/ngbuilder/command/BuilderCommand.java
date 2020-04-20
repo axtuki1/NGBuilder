@@ -9,6 +9,7 @@ import io.github.axtuki1.ngbuilder.system.NGData;
 import io.github.axtuki1.ngbuilder.task.BaseTask;
 import io.github.axtuki1.ngbuilder.task.BaseTimerTask;
 import io.github.axtuki1.ngbuilder.task.MainTimerTask;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -38,6 +39,9 @@ public class BuilderCommand implements TabExecutor {
         }
         if( args[0].equalsIgnoreCase("ng") ){
             new BuilderNGCmd().onCommand(sender,command,label,args);
+        } else if( args[0].equalsIgnoreCase("changelog") ){
+            sender.sendMessage(ChatColor.AQUA + NGBuilder.getMain().getDescription().getName() + ChatColor.GRAY + " v" + ChatColor.YELLOW + NGBuilder.getMain().getDescription().getVersion() + ChatColor.WHITE + " ChangeLog:");
+            sender.sendMessage(NGBuilder.getChangeLog());
         } else if( sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
             if( args[0].equalsIgnoreCase("start") ){
                 if( GameStatus.getStatus().equals(GameStatus.End) ){
@@ -80,6 +84,14 @@ public class BuilderCommand implements TabExecutor {
             } else if(args[0].equalsIgnoreCase("c")) {
                 BlockData bd = new BlockData(Utility.getItemInHand(((Player)sender)));
                 sender.sendMessage( bd.getMaterial().toString() + ":" + bd.getDataValue() + " -> " + NGData.NetherAndEndOnly.canUse(bd));
+            } else if(args[0].equalsIgnoreCase("skip")) {
+
+                BaseTask t = NGBuilder.getTask();
+                if( t instanceof MainTimerTask ){
+                    MainTimerTask task = (MainTimerTask) t;
+                    task.skip();
+                }
+
             } else if(args[0].equalsIgnoreCase("loc")) {
                 if (args.length == 2) {
                     Player p = (Player)sender;
@@ -103,19 +115,19 @@ public class BuilderCommand implements TabExecutor {
                     GamePlayers.addSettingPlayer(p.getUniqueId());
 
                     // point1
-                    ItemStack item = new ItemStack(Material.WOOL, 1, (byte) 6);
+                    ItemStack item = new ItemStack(Material.PURPLE_WOOL, 1);
                     ItemMeta meta = item.getItemMeta();
                     meta.setDisplayName(ChatColor.LIGHT_PURPLE + "建築可能エリア Point1");
                     item.setItemMeta(meta);
                     p.getInventory().addItem(item);
 
-                    item = new ItemStack(Material.WOOL, 1, (byte) 11);
+                    item = new ItemStack(Material.LIGHT_BLUE_WOOL, 1);
                     meta = item.getItemMeta();
                     meta.setDisplayName(ChatColor.AQUA + "建築可能エリア Point2");
                     item.setItemMeta(meta);
                     p.getInventory().addItem(item);
 
-//                    item = new ItemStack( Material.WOOL,1, (byte)4);
+//                    item = new ItemStack( Material.YELLOW_WOOL,1);
 //                    meta = item.getItemMeta();
 //                    meta.setDisplayName(ChatColor.GOLD + "建築者TPポイント");
 //                    item.setItemMeta(meta);
@@ -124,6 +136,8 @@ public class BuilderCommand implements TabExecutor {
                 }
             } else if( args[0].equalsIgnoreCase("spec") ){
                 new BuilderSpecCmd().onCommand(sender,command,label,args);
+            } else if( args[0].equalsIgnoreCase("team") ){
+                new BuilderTeamCmd().onCommand(sender,command,label,args);
             } else if( args[0].equalsIgnoreCase("style") ){
                 GameData.GameStyle s = GameData.GameStyle.valueOf(args[1]);
                 GameData.setStyle(s);
@@ -267,8 +281,16 @@ public class BuilderCommand implements TabExecutor {
                                 time
                         );
                         List<ChatColor> color = new ArrayList<>();
+                        int size = 0;
+                        for( PlayerData pd : GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player) ){
+                            if( pd.getColor().equals(ChatColor.WHITE) ){
+                                size++;
+                            } else {
+                                GameData.setStyle(GameData.GameStyle.TEAM);
+                            }
+                        }
                         if( GameData.getStyle().equals(GameData.GameStyle.TEAM) ){
-                            float half = GamePlayers.getPlayersFromPlayingType(PlayerData.PlayingType.Player).size() / 2;
+                            float half = size / 2;
                             if( half <= 10 ){
                                 // 2チーム
                                 color.add(ChatColor.RED);
@@ -308,7 +330,7 @@ public class BuilderCommand implements TabExecutor {
                                 }
                                 p.setGameMode(GameMode.ADVENTURE);
                                 p.setAllowFlight(true);
-                                p.setPlayerListName(p.getName() + " ");
+                                p.setPlayerListName(pd.getName() + " ");
                             } else if (pd.getPlayingType().equals(PlayerData.PlayingType.Spectator)) {
                                 pd.getPlayer().sendMessage(ChatColor.RED + "=====" + ChatColor.WHITE + " 観戦者として参加しています " + ChatColor.RED + "=====");
                                 pd.getPlayer().sendMessage(ChatColor.AQUA + "このセッション中のチャットは観戦者全体にのみ聞こえます。");
@@ -350,6 +372,7 @@ public class BuilderCommand implements TabExecutor {
         Utility.sendCmdHelp(sender, "/builder now", "現在のお題を表示します。");
         Utility.sendCmdHelp(sender, "/builder option <Key> <Value>", "設定を変更します。");
         Utility.sendCmdHelp(sender, "/builder theme <...>", "お題に関するコマンドです。");
+        Utility.sendCmdHelp(sender, "/builder style <SOLO|TEAM>", "ゲームモードを変更します。");
         Utility.sendCmdHelp(sender, "/builder perlist", "制約の確率を確認できます。");
         Utility.sendCmdHelp(sender, "/builder reload", "Config他の再読込を行います。");
     }
@@ -360,7 +383,7 @@ public class BuilderCommand implements TabExecutor {
         if( args.length == 1 ){
             if( sender.hasPermission(NGBuilder.getGameMasterPermission()) ){
                 for (String name : new String[]{
-                        "start", "gmstart", "stop", "next", "init", "timer", "option", "spec", "list", "theme", "clean", "style", "played"
+                        "start", "gmstart", "stop", "next", "init", "timer", "option", "spec", "list", "theme", "clean", "style", "played", "team", "skip"
                 }) {
                     if (name.toLowerCase().startsWith(args[0].toLowerCase())) {
                         out.add(name);
@@ -368,7 +391,7 @@ public class BuilderCommand implements TabExecutor {
                 }
             }
             for (String name : new String[]{
-                    "ng"
+                    "ng","changelog"
             }) {
                 if (name.toLowerCase().startsWith(args[0].toLowerCase())) {
                     out.add(name);
@@ -398,6 +421,8 @@ public class BuilderCommand implements TabExecutor {
                 out = new BuilderOptionCmd().onTabComplete(sender, command, alias, args);
             } else if( args[0].equalsIgnoreCase("theme") ){
                 out = new BuilderThemeCmd().onTabComplete(sender, command, alias, args);
+            } else if( args[0].equalsIgnoreCase("team") ){
+                out = new BuilderTeamCmd().onTabComplete(sender, command, alias, args);
             } else if( args[0].equalsIgnoreCase("ng") ){
                 out = new BuilderNGCmd().onTabComplete(sender, command, alias, args);
             } else if( args[0].equalsIgnoreCase("debug") ){

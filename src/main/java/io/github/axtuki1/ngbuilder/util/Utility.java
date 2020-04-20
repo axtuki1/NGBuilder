@@ -1,17 +1,16 @@
-package io.github.axtuki1.ngbuilder;
+package io.github.axtuki1.ngbuilder.util;
 
+import io.github.axtuki1.ngbuilder.NGBuilder;
 import io.github.axtuki1.ngbuilder.player.PlayerData;
 import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

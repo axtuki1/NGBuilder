@@ -3,13 +3,15 @@ package io.github.axtuki1.ngbuilder.task;
 import io.github.axtuki1.ngbuilder.GameConfig;
 import io.github.axtuki1.ngbuilder.GameStatus;
 import io.github.axtuki1.ngbuilder.NGBuilder;
-import io.github.axtuki1.ngbuilder.Utility;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import io.github.axtuki1.ngbuilder.comparator.RankComparator;
 import io.github.axtuki1.ngbuilder.player.GamePlayers;
 import io.github.axtuki1.ngbuilder.player.PlayerData;
 import io.github.axtuki1.ngbuilder.system.GameData;
 import io.github.axtuki1.ngbuilder.system.NGData;
 import io.github.axtuki1.ngbuilder.system.ThemeData;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -19,8 +21,6 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -32,6 +32,8 @@ public class MainTimerTask extends BaseTimerTask {
     private BaseTask subTask;
     private boolean endProcessing;
     private DecimalFormat df;
+
+    private int limit = 30;
 
     public MainTimerTask(NGBuilder pl, long sec) {
         super(pl, sec);
@@ -70,7 +72,7 @@ public class MainTimerTask extends BaseTimerTask {
                     nonBuiltPlayers.add(pd);
                 }
             } else {
-                Bukkit.broadcast("[棄権通知] >>> " + pd.getName() + ": 観戦へ変更しました", NGBuilder.getGameMasterPermission());
+                Bukkit.broadcast("[棄権通知] >>> " + pd.getName() + ChatColor.WHITE + ": 観戦へ変更しました", NGBuilder.getGameMasterPermission());
                 pd.setPlayingType(PlayerData.PlayingType.Spectator);
             }
             GamePlayers.setData(pd.getUUID(), pd);
@@ -182,6 +184,8 @@ public class MainTimerTask extends BaseTimerTask {
         }
         Bukkit.broadcastMessage("");
         Bukkit.broadcastMessage(ChatColor.RED +"========================================================");
+        Bukkit.broadcastMessage(ChatColor.AQUA.toString()+limit+"秒後に解答の受付を開始します。");
+        Bukkit.broadcastMessage(ChatColor.AQUA.toString()+"それ以前に解答しても判定されません。");
         builderPlayerData.getPlayer().sendMessage(ChatColor.AQUA + "/cleanで白紙に戻すことができます。");
         for( Player p : Bukkit.getOnlinePlayers() ){
             PlayerData pd = GamePlayers.getData(p);
@@ -341,6 +345,9 @@ public class MainTimerTask extends BaseTimerTask {
                 Bukkit.broadcastMessage(NGBuilder.getPrefix() + ChatColor.YELLOW + "ジャンル: " + ChatColor.GREEN + currentThemeData.getGenre() );
                 Utility.playSoundToAllPlayer(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             }
+            if( getSecondsMax() - limit == getSeconds() ){
+                Bukkit.broadcastMessage(NGBuilder.getPrefix() + ChatColor.GREEN + "解答の受付を開始しました。");
+            }
         }
     }
 
@@ -375,7 +382,7 @@ public class MainTimerTask extends BaseTimerTask {
 
             ob.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-            ob.setDisplayName("情報 ["+ Utility.getPingString(p)+ChatColor.WHITE+"]");
+            ob.setDisplayName("NGBuilder ["+ Utility.getPingString(p)+ChatColor.WHITE+"]");
 
 
             PlayerData pd = GamePlayers.getData(p);
@@ -385,18 +392,24 @@ public class MainTimerTask extends BaseTimerTask {
             if( pd.getPlayingType().equals(PlayerData.PlayingType.Player) ){
                 if( !pd.isHiddenInfo() ){
                     if( pd.isBuilder() ){
-                        set.add("お題: " + ChatColor.GREEN + currentThemeData.getTheme());
-                        set.add("制約: " + ChatColor.GREEN + currentNGData.getShortName());
+                        set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "ジャンル");
+                        set.add("  " + ChatColor.GREEN + currentThemeData.getGenre());
+                        set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "お題");
+                        set.add("  " + ChatColor.GREEN + currentThemeData.getTheme());
+                        set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "制約");
+                        set.add("  " + ChatColor.GREEN + currentNGData.getShortName());
                         if( !isEndProcessing() ){
                             if( subTask != null ){
                                 if( subTask instanceof BlockCountTask ){
-                                    set.add("総ブロック: " + ChatColor.GREEN + ((BlockCountTask)subTask).getCount() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
+                                    set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "総ブロック");
+                                    set.add("  " + ChatColor.GREEN + ((BlockCountTask)subTask).getCount() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
                                     if( ((BlockCountTask)subTask).getCount() > currentNGData.getCount() ){
                                         NGEnd();
                                     }
                                 }
                                 if( subTask instanceof StopTimeTask ){
-                                    set.add("猶予: " + ChatColor.GREEN + ((StopTimeTask)subTask).getStopTime() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
+                                    set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "猶予");
+                                    set.add("  " + ChatColor.GREEN + ((StopTimeTask)subTask).getStopTime() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
                                     if( ((StopTimeTask)subTask).getStopTime() >= currentNGData.getCount() ){
                                         NGEnd();
                                     }
@@ -406,9 +419,10 @@ public class MainTimerTask extends BaseTimerTask {
                     }
                 }
                 if( !pd.getColor().equals(ChatColor.WHITE) ){
-                    set.add("所属: " + pd.getColorName());
+                    set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "所属");
+                    set.add("  " + pd.getColorName());
                 }
-                set.add("得点: " + ChatColor.GREEN + pd.getPoint());
+                set.add(ChatColor.YELLOW + "得点: " + ChatColor.GREEN + pd.getPoint());
 
 //                if( getCurrentNGData() != null ){
 //                    if( !getCurrentNGData().canUse(Utility.getItemInHand(p)) && Utility.getItemInHand(p).getType() != Material.AIR ){
@@ -419,22 +433,29 @@ public class MainTimerTask extends BaseTimerTask {
 //                }
 
             } else if( pd.getPlayingType().equals(PlayerData.PlayingType.GameMaster) ){
-                set.add("役職: " + ChatColor.YELLOW + "[GameMaster]");
-                set.add("参加人数: " + ChatColor.AQUA + Player_Count);
-                set.add("観戦者数: " + ChatColor.AQUA + Spectator_Count);
+                set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "役職");
+                set.add("  " + ChatColor.YELLOW + "[GameMaster]");
+                set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "参加人数");
+                set.add("  " + ChatColor.AQUA + Player_Count);
+                set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "観戦者数");
+                set.add("  " + ChatColor.AQUA + Spectator_Count);
                 if( !pd.isHiddenInfo() ){
-                    set.add("お題: " + ChatColor.GREEN + currentThemeData.getTheme());
-                    set.add("制約: " + ChatColor.GREEN + currentNGData.getShortName());
+                    set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "お題");
+                    set.add("  " + ChatColor.GREEN + currentThemeData.getTheme());
+                    set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "制約");
+                    set.add("  " + ChatColor.GREEN + currentNGData.getShortName());
                     if( !isEndProcessing() ){
                         if( subTask != null ){
                             if( subTask instanceof BlockCountTask ){
-                                set.add("総ブロック: " + ChatColor.GREEN + ((BlockCountTask)subTask).getCount() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
+                                set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "総ブロック");
+                                set.add("  " + ChatColor.GREEN + ((BlockCountTask)subTask).getCount() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
                                 if( ((BlockCountTask)subTask).getCount() > currentNGData.getCount() ){
                                     NGEnd();
                                 }
                             }
                             if( subTask instanceof StopTimeTask ){
-                                set.add("猶予: " + ChatColor.GREEN + ((StopTimeTask)subTask).getStopTime() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
+                                set.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "猶予");
+                                set.add("  " + ChatColor.GREEN + ((StopTimeTask)subTask).getStopTime() + ChatColor.GRAY + "/" + ChatColor.AQUA + currentNGData.getCount());
                                 if( ((StopTimeTask)subTask).getStopTime() >= currentNGData.getCount() ){
                                     NGEnd();
                                 }
@@ -442,23 +463,21 @@ public class MainTimerTask extends BaseTimerTask {
                         }
                     }
                 }
-            } else {
-                set.add("役職: [なし]");
             }
 
-            if( Boolean.parseBoolean( String.valueOf(pd.getDebug().get("SeeNearPlayer")) ) ){
-
-                Map.Entry<Player, Double> e = Utility.getNearPlayer(p);
-
-                set.add(ChatColor.RED + "[D]" + ChatColor.WHITE + "Near Player:");
-                if(e == null){
-                    set.add("  Not Found");
-                } else {
-                    Map.Entry<Player, Double> block = e;
-                    BigDecimal bd = new BigDecimal(block.getValue());
-                    set.add("  " + block.getKey().getName() + "/"+bd.setScale(0, RoundingMode.HALF_UP)+"b");
-                }
-            }
+//            if( Boolean.parseBoolean( String.valueOf(pd.getDebug().get("SeeNearPlayer")) ) ){
+//
+//                Map.Entry<Player, Double> e = Utility.getNearPlayer(p);
+//
+//                set.add(ChatColor.RED + "[D]" + ChatColor.WHITE + "Near Player:");
+//                if(e == null){
+//                    set.add("  Not Found");
+//                } else {
+//                    Map.Entry<Player, Double> block = e;
+//                    BigDecimal bd = new BigDecimal(block.getValue());
+//                    set.add("  " + block.getKey().getName() + "/"+bd.setScale(0, RoundingMode.HALF_UP)+"b");
+//                }
+//            }
 
             if( addList != null ){
                 set.addAll(addList);
@@ -467,7 +486,14 @@ public class MainTimerTask extends BaseTimerTask {
             if( !isInfinity  ){
 //                SimpleDateFormat formatter = new SimpleDateFormat("m:ss");
 //                formatter.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
-                set.add("残り時間: " + Utility.getColor(getSeconds(), getSecondsMax()) + Utility.convSecToTime((int) getSeconds()));
+                set.add(ChatColor.YELLOW + "残り時間: "+Utility.getColor(getSeconds(), getSecondsMax()) + Utility.convSecToTime((int) getSeconds()));
+            }
+
+            if( getSecondsElapsed() < limit ){
+                set.add(ChatColor.RED + ChatColor.BOLD.toString() + ChatColor.UNDERLINE.toString() + "判定制限中 <<< ");
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "現在回答しても判定されません"));
+            } else if( getSecondsElapsed() < limit + 5 ){
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
             }
 
             if( pd.getPlayingType().equals(PlayerData.PlayingType.Spectator) ){
@@ -476,6 +502,7 @@ public class MainTimerTask extends BaseTimerTask {
             if( p.hasPermission(NGBuilder.getBroadcasterPermission()) ){
                 set.add(ChatColor.GRAY + ">>> Broadcaster Mode");
             }
+
 
             List<String> list = new ArrayList<>(set);
 
@@ -524,14 +551,45 @@ public class MainTimerTask extends BaseTimerTask {
         Bukkit.broadcastMessage("   " + ChatColor.YELLOW +"建築者   "+ChatColor.GREEN+": " + ChatColor.WHITE + builderPlayerData.getName());
         Bukkit.broadcastMessage("   " + ChatColor.YELLOW +"ジャンル "+ChatColor.GREEN+": " + ChatColor.WHITE + currentThemeData.getGenre());
         Bukkit.broadcastMessage("   " + ChatColor.YELLOW +"難易度   "+ChatColor.GREEN+": " + ChatColor.WHITE + currentThemeData.getDifficulty());
-        Bukkit.broadcastMessage("   " + ChatColor.YELLOW + "お題    " + ChatColor.GREEN + ": " + ChatColor.WHITE + currentThemeData.getTheme());
-        Bukkit.broadcastMessage("   " + ChatColor.YELLOW + "制約    " + ChatColor.GREEN + ": " + ChatColor.WHITE + currentNGData.getName() + ChatColor.YELLOW + " ["+df.format(currentNGData.getPriorityPer())+"]");
+        Bukkit.broadcastMessage("   " + ChatColor.YELLOW +"お題     " + ChatColor.GREEN + ": " + ChatColor.WHITE + currentThemeData.getTheme());
+        Bukkit.broadcastMessage("   " + ChatColor.YELLOW +"制約     " + ChatColor.GREEN + ": " + ChatColor.WHITE + currentNGData.getName() + ChatColor.YELLOW + " ["+df.format(currentNGData.getPriorityPer())+"]");
         Bukkit.broadcastMessage("");
         Bukkit.broadcastMessage(ChatColor.RED +"========================================================");
         Utility.playSoundToAllPlayer(Sound.ENTITY_BLAZE_DEATH, 1, 1);
         for(Player p : Bukkit.getOnlinePlayers()){
             p.sendTitle( ChatColor.GREEN + currentThemeData.getTheme()  ,
                     ChatColor.RED + "時間切れ！",
+                    10,
+                    20*3,
+                    20
+            );
+        }
+        nextAction();
+    }
+
+    public void skip() {
+        Bukkit.broadcastMessage(
+                ChatColor.RED + "===================" +
+                        ChatColor.GREEN + "[" +
+                        ChatColor.AQUA + "ROUND " +
+                        GameData.getRound() +
+                        ChatColor.WHITE + " - " +
+                        ChatColor.YELLOW + "Result" +
+                        ChatColor.GREEN + "]" +
+                        ChatColor.RED + "===================" );
+        Bukkit.broadcastMessage("");
+        Bukkit.broadcastMessage("   " + ChatColor.GREEN + "SKIP " + ChatColor.AQUA + ">"  + ChatColor.YELLOW + ">" + ChatColor.AQUA + ">");
+        Bukkit.broadcastMessage("   " + ChatColor.YELLOW +"建築者   "+ChatColor.GREEN+": " + ChatColor.WHITE + builderPlayerData.getName());
+        Bukkit.broadcastMessage("   " + ChatColor.YELLOW +"ジャンル "+ChatColor.GREEN+": " + ChatColor.WHITE + currentThemeData.getGenre());
+        Bukkit.broadcastMessage("   " + ChatColor.YELLOW +"難易度   "+ChatColor.GREEN+": " + ChatColor.WHITE + currentThemeData.getDifficulty());
+        Bukkit.broadcastMessage("   " + ChatColor.YELLOW +"お題     " + ChatColor.GREEN + ": " + ChatColor.WHITE + currentThemeData.getTheme());
+        Bukkit.broadcastMessage("   " + ChatColor.YELLOW +"制約     " + ChatColor.GREEN + ": " + ChatColor.WHITE + currentNGData.getName() + ChatColor.YELLOW + " ["+df.format(currentNGData.getPriorityPer())+"]");
+        Bukkit.broadcastMessage("");
+        Bukkit.broadcastMessage(ChatColor.RED +"========================================================");
+        Utility.playSoundToAllPlayer(Sound.ENTITY_ITEM_BREAK, 1, 1);
+        for(Player p : Bukkit.getOnlinePlayers()){
+            p.sendTitle( ChatColor.GREEN + currentThemeData.getTheme()  ,
+                    ChatColor.GRAY + ">>> " + ChatColor.WHITE + "SKIP " + ChatColor.GRAY + ">>>",
                     10,
                     20*3,
                     20
@@ -581,7 +639,7 @@ public class MainTimerTask extends BaseTimerTask {
         if( bo.length() != 0 ){
             Bukkit.broadcastMessage("   " + ChatColor.GOLD + ChatColor.BOLD.toString() + "ThemeBonus！" + bo);
         }
-        Bukkit.broadcastMessage("   " + ChatColor.GREEN + "正解者" + ChatColor.YELLOW + ": " + ChatColor.WHITE + player.getName() + ChatColor.GOLD + " +"+addAn);
+        Bukkit.broadcastMessage("   " + ChatColor.GREEN + "正解者" + ChatColor.YELLOW + ": " + ChatColor.WHITE + pd.getName() + ChatColor.GOLD + " +"+addAn);
         Bukkit.broadcastMessage("");
         Bukkit.broadcastMessage(ChatColor.RED +"========================================================");
         Utility.playSoundToAllPlayer(Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
@@ -746,10 +804,27 @@ public class MainTimerTask extends BaseTimerTask {
 
     @Override
     public void onChat(AsyncPlayerChatEvent e) {
-        Bukkit.broadcastMessage( "<"+e.getPlayer().getName()+"> " + e.getMessage() );
-        if( !builderPlayerData.getUUID().equals(e.getPlayer().getUniqueId()) && !endProcessing ){
+        PlayerData pd = GamePlayers.getData(e.getPlayer().getUniqueId());
+        if(GamePlayers.isSpectator(pd)){
+            if(getCurrentThemeData().getTheme().equalsIgnoreCase( e.getMessage() )){
+                NGBuilder.sendWatcher(ChatColor.WHITE + "[観戦] <" + e.getPlayer().getName() + "> "+ChatColor.GREEN+"[***正解***]");
+                return;
+            }
+            NGBuilder.sendWatcher(ChatColor.WHITE + "[観戦] <" + e.getPlayer().getName() + "> " + e.getMessage());
+            return;
+        }
+        if(builderPlayerData.getUUID().equals(e.getPlayer().getUniqueId())){
             if( getCurrentThemeData().getTheme().equalsIgnoreCase( e.getMessage() ) ){
-                CorrectEnd(e.getPlayer());
+                Bukkit.broadcastMessage( "<"+e.getPlayer().getName()+"> " +ChatColor.GREEN+"[***正解***]" );
+                return;
+            }
+        }
+        Bukkit.broadcastMessage( "<"+e.getPlayer().getName()+"> " + e.getMessage() );
+        if( getSecondsElapsed() >= limit ){
+            if( !builderPlayerData.getUUID().equals(e.getPlayer().getUniqueId()) && !endProcessing ){
+                if( getCurrentThemeData().getTheme().equalsIgnoreCase( e.getMessage() ) ){
+                    CorrectEnd(e.getPlayer());
+                }
             }
         }
     }
@@ -794,7 +869,7 @@ public class MainTimerTask extends BaseTimerTask {
                 p.setGameMode(GameMode.ADVENTURE);
                 p.setAllowFlight(false);
                 p.getInventory().clear();
-                p.teleport( NGBuilder.getWorld().getSpawnLocation().add(0.5,0,0.5) );
+//                p.teleport( NGBuilder.getWorld().getSpawnLocation().add(0.5,0,0.5) );
             }
         }
 
@@ -942,13 +1017,13 @@ public class MainTimerTask extends BaseTimerTask {
                 if(rank_point.get( map.get( pd.getColor() ) ) != null){
                     your_rank = rank_point.get(map.get( pd.getColor() ));
                 }
-                msg.add(ChatColor.GRAY + "-----------------------------------------------------------");
+                msg.add(ChatColor.GRAY + "-------------------------------------------------------------");
                 msg.add(ChatColor.GREEN + " "+ ( your_rank <= 0 ? "?" : your_rank ) +"位 " + pd.getColor() + pd.getColor().name() + ChatColor.GRAY + ": " + ChatColor.YELLOW + map.get( pd.getColor() ) +"pt");
                 pd.getPlayer().sendMessage(msg.toArray(new String[msg.size()]));
 
             }
         }
-        Bukkit.broadcastMessage(ChatColor.RED + "===========================================================");
+        Bukkit.broadcastMessage(ChatColor.RED + "=============================================================");
 
 
 
@@ -959,6 +1034,8 @@ public class MainTimerTask extends BaseTimerTask {
 
 
     }
+
+
 
     private ChatColor getRankColor(int count) {
         switch (count) {

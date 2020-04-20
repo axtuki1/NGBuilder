@@ -2,7 +2,7 @@ package io.github.axtuki1.ngbuilder.command;
 
 import io.github.axtuki1.ngbuilder.GameConfig;
 import io.github.axtuki1.ngbuilder.NGBuilder;
-import io.github.axtuki1.ngbuilder.Utility;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -178,7 +178,8 @@ public class BuilderOptionCmd implements TabExecutor {
             }
         } else if(args.length == 3){
             if( !args[1].equalsIgnoreCase("GameTime") &&
-                    !args[1].equalsIgnoreCase("Difficulty")  ){
+                    !args[1].equalsIgnoreCase("Difficulty")&&
+                    !args[1].equalsIgnoreCase("Cycle")  ){
                 for (String name : new String[]{
                         "true","false"
                 }) {

@@ -6,6 +6,7 @@ import io.github.axtuki1.ngbuilder.listener.*;
 import io.github.axtuki1.ngbuilder.player.GamePlayers;
 import io.github.axtuki1.ngbuilder.system.GameData;
 import io.github.axtuki1.ngbuilder.task.BaseTask;
+import io.github.axtuki1.ngbuilder.util.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -25,6 +26,12 @@ public final class NGBuilder extends JavaPlugin {
     private HashMap<String, TabExecutor> commands;
     private static NGBuilder main;
     private static World world;
+
+    public static String[] getChangeLog(){
+        return new String[]{
+                "1.14.4仮対応。新ブロックやID変更に追われて対応漏れアリ。"
+        };
+    }
 
     @Override
     public void onEnable() {

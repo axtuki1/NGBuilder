@@ -55,17 +55,17 @@ public class BlockCountTask extends BaseTask {
                         byte data = loc.getBlock().getData();
                         Material mate = loc.getBlock().getType();
                         if( ng.getCountDenyMode().equals(NGData.CountDenyMode.Normal) ){
-                            if( mate.equals(Material.WATER) || mate.equals(Material.STATIONARY_WATER) || mate.equals(Material.LAVA) || mate.equals(Material.STATIONARY_LAVA) ){
+                            if( mate.equals(Material.WATER) || mate.equals(Material.LAVA) ){
                                 if( data == 0 ){
                                     count++;
                                 }
-                            } else if( mate.equals(Material.PISTON_EXTENSION) || mate.equals(Material.PISTON_MOVING_PIECE) ){
+                            } else if( mate.equals(Material.PISTON_HEAD) || mate.equals(Material.MOVING_PISTON) ){
                                 // do nothing.
                             } else {
                                 count++;
                             }
                         } else if( ng.getCountDenyMode().equals( NGData.CountDenyMode.Hard ) ){
-                            if( mate.equals(Material.WATER) || mate.equals(Material.STATIONARY_WATER) || mate.equals(Material.LAVA) || mate.equals(Material.STATIONARY_LAVA) ){
+                            if( mate.equals(Material.WATER) || mate.equals(Material.LAVA)  ){
                                 if( data == 0 ){
                                     count++;
                                 }

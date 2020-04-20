@@ -1,4 +1,4 @@
-package io.github.axtuki1.ngbuilder;
+package io.github.axtuki1.ngbuilder.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

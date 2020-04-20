@@ -120,6 +120,9 @@ public class PlayerData {
         if( p != null ) {
             name = p.getName();
         }
+        if( getColor().equals(ChatColor.MAGIC) ){
+            return "[MAGIC] " + name;
+        }
         return getColor() + name;
     }
 
