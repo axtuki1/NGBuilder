@@ -830,7 +830,7 @@ public enum GameConfig {
 
     public HashMap<NGData, Integer> getNGDataPrioritys(){
         HashMap<NGData, Integer> out = new HashMap<>();
-        for( NGData ng : NGData.values() ){
+        for( NGData ng : NGData.getAllNGData() ){
             out.put(ng, ng.getPriority());
         }
         return out;
@@ -839,14 +839,14 @@ public enum GameConfig {
     public void setNGDataPrioritys(HashMap<NGData, Integer> input){
         HashMap<String, Integer> out = new HashMap<>();
         for( NGData ng : input.keySet() ){
-            out.put(ng.name(), input.get(ng));
+            out.put(ng.getId(), input.get(ng));
         }
         set(out);
     }
 
     public HashMap<NGData, Double> getNGDataBonus(){
         HashMap<NGData, Double> out = new HashMap<>();
-        for( NGData ng : NGData.values() ){
+        for( NGData ng : NGData.getAllNGData() ){
             out.put(ng, ng.getBonus());
         }
         return out;
@@ -855,7 +855,7 @@ public enum GameConfig {
     public void setNGDataBonus(HashMap<NGData, Double> input){
         HashMap<String, Double> out = new HashMap<>();
         for( NGData ng : input.keySet() ){
-            out.put(ng.name(), input.get(ng));
+            out.put(ng.getId(), input.get(ng));
         }
         set(out);
     }

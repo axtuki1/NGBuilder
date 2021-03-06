@@ -121,7 +121,7 @@ public class MainTimerTask extends BaseTimerTask {
 
 //        currentThemeData = GameConfig.ThemeList.getStringList().get( Utility.generateRandom(GameConfig.ThemeList.getStringList().size()) );
         List<NGData> ngList = new ArrayList<>();
-        for( NGData ngData : NGData.values() ){
+        for( NGData ngData : NGData.getAllNGData() ){
             for (int i = 0; i < ngData.getPriority(); i++) {
                 ngList.add(ngData);
             }
@@ -182,6 +182,7 @@ public class MainTimerTask extends BaseTimerTask {
         if( currentNGData.getStartDescription() != null ){
             builderPlayerData.getPlayer().sendMessage("   "+currentNGData.getStartDescription());
         }
+
         Bukkit.broadcastMessage("");
         Bukkit.broadcastMessage(ChatColor.RED +"========================================================");
         Bukkit.broadcastMessage(ChatColor.AQUA.toString()+limit+"秒後に解答の受付を開始します。");
@@ -823,6 +824,7 @@ public class MainTimerTask extends BaseTimerTask {
         if( getSecondsElapsed() >= limit ){
             if( !builderPlayerData.getUUID().equals(e.getPlayer().getUniqueId()) && !endProcessing ){
                 if( getCurrentThemeData().getTheme().equalsIgnoreCase( e.getMessage() ) ){
+                    endProcessing = true;
                     CorrectEnd(e.getPlayer());
                 }
             }

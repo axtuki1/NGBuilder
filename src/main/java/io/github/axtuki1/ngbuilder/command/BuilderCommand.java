@@ -81,9 +81,6 @@ public class BuilderCommand implements TabExecutor {
                 NGBuilder.getMain().reloadConfig();
                 GameConfig.ThemeDataList.reload();
                 sender.sendMessage(NGBuilder.getPrefix() + "Configの再読込を行いました。");
-            } else if(args[0].equalsIgnoreCase("c")) {
-                BlockData bd = new BlockData(Utility.getItemInHand(((Player)sender)));
-                sender.sendMessage( bd.getMaterial().toString() + ":" + bd.getDataValue() + " -> " + NGData.NetherAndEndOnly.canUse(bd));
             } else if(args[0].equalsIgnoreCase("skip")) {
 
                 BaseTask t = NGBuilder.getTask();

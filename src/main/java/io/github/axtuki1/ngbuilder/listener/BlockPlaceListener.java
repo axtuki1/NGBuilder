@@ -9,6 +9,10 @@ import io.github.axtuki1.ngbuilder.player.PlayerData;
 import io.github.axtuki1.ngbuilder.system.BlockData;
 import io.github.axtuki1.ngbuilder.system.NGData;
 import io.github.axtuki1.ngbuilder.task.MainTimerTask;
+import jdk.nashorn.internal.ir.Block;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,6 +29,8 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class BlockPlaceListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -103,38 +109,34 @@ public class BlockPlaceListener implements Listener {
             e.getPlayer().sendMessage("BlockPlaced: " + e.getBlockPlaced().getType() + ":" + e.getBlockPlaced().getData());
             NGData ng = GamePlayers.getCurrentDebuggingNGData();
             if (ng != null) {
-                BlockData bd = ng.getList().stream().filter(bda -> bda.getMaterial().equals(e.getBlock().getType())).findAny().orElse(null);
-                e.getPlayer().sendMessage(ng.name() + ": " + ng.getName());
+                Material bd = ng.getBlockDataList().stream().filter(bda -> bda.equals(e.getBlock().getType())).findAny().orElse(null);
+                e.getPlayer().sendMessage(ng.getId() + ": " + ng.getName());
                 e.getPlayer().sendMessage(" canUse() -> " + (ng.canUse(e.getBlock())?"置ける":"置けない"));
                 e.getPlayer().sendMessage(
-                        " ちなみに表のBlockDataのMaterialにある？ -> " +
+                        " ちなみに表のMaterialにある？ -> " +
                                 (
                                         bd != null ?
                                                 "ある":
                                                 "ない"
                                 )
                 );
-                e.getPlayer().sendMessage(
-                        " List BlockData -> " +
-                                (
-                                        bd != null ?
-                                                "Material: "+bd.getMaterial()+", data: " + bd.getDataValue() + ", isNon: " +bd.isNonDataValue() :
-                                                "は？"
-                                )
-                );
-                bd = new BlockData(e.getBlock());
-                e.getPlayer().sendMessage(
-                        " Place BlockData -> " +
-                                (
-                                        bd != null ?
-                                                "Material: "+bd.getMaterial()+", data: " + bd.getDataValue() + ", isNon: " +bd.isNonDataValue() :
-                                                "は？"
-                                )
-                );
             }
         }
+        PlayerData pd = GamePlayers.getData(e.getPlayer());
+        if( pd.isBlockRegisterMode() ){
+            NGData data = pd.getNGData();
+            List<Material> dataList = data.getBlockDataList();
+            if(dataList.contains(e.getBlock().getType())){
+                e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + "登録解除しました"));
+                dataList.remove(e.getBlock().getType());
+            } else {
+                e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.GREEN + "登録しました"));
+                dataList.add(e.getBlock().getType());
+            }
+            data.setBlockDataList(dataList);
+            data.save();
+        }
         if (GameStatus.getStatus().equals(GameStatus.Playing)) {
-            PlayerData pd = GamePlayers.getData(e.getPlayer());
             Player p = e.getPlayer();
             if (pd.getPlayingType().equals(PlayerData.PlayingType.Player)) {
                 if (pd.isBuilder()) {
@@ -230,10 +232,10 @@ public class BlockPlaceListener implements Listener {
                             if (task.getCurrentNGData().getNGMode().equals(NGData.NGMode.LiquidDeny)) {
                                 task.NGEnd();
                             } else if( task.getCurrentNGData().getNGMode().equals(NGData.NGMode.Only) ){
-                                if( !task.getCurrentNGData().canUse(new BlockData(e.getBucket())) ){
-                                    NGBuilder.sendConsole(e.getBucket()+"");
-                                    task.NGEnd();
-                                }
+//                                if( !task.getCurrentNGData().canUse(e.getBucket()) ){
+//                                    NGBuilder.sendConsole(e.getBucket()+"");
+//                                    task.NGEnd();
+//                                }
                             }
                         }
                     }

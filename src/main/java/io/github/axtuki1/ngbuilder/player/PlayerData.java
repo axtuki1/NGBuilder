@@ -1,5 +1,6 @@
 package io.github.axtuki1.ngbuilder.player;
 
+import io.github.axtuki1.ngbuilder.system.NGData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -15,7 +16,8 @@ public class PlayerData {
     private String name;
     // isHiddenInfo: サイドバーの表示を最小限にするか
     // isBuilder: 建築者か
-    private boolean isHiddenInfo, isBuilder;
+    // isBlockRegisterMode: ブロックの登録モードか
+    private boolean isHiddenInfo, isBuilder, isBlockRegisterMode;
     // プレイヤーかGMか
     private PlayingType type;
     // ポイント
@@ -23,6 +25,7 @@ public class PlayerData {
     private ChatColor color;
     // デバッグ項目
     private HashMap<String, Boolean> debug;
+    private NGData data;
 
     public PlayerData(Player p ){
         this.player = p.getUniqueId();
@@ -140,6 +143,22 @@ public class PlayerData {
 
     public PlayingType getPlayingType() {
         return type;
+    }
+
+    public void setBlockRegisterMode(boolean blockRegisterMode) {
+        isBlockRegisterMode = blockRegisterMode;
+    }
+
+    public boolean isBlockRegisterMode() {
+        return isBlockRegisterMode;
+    }
+
+    public NGData getNGData() {
+        return data;
+    }
+
+    public void setNGData(NGData data) {
+        this.data = data;
     }
 
     /**

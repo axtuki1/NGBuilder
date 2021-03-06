@@ -25,6 +25,19 @@ public class Utility {
         return Bukkit.getPlayerExact(Name);
     }
 
+    public static void dump(Object obj){
+        try {
+            System.out.println(obj.getClass().toString() + ": ");
+            for( Field f : obj.getClass().getDeclaredFields() ){
+                f.setAccessible(true);
+                System.out.println("  "+f.getType().getName() );
+                System.out.println("    L "+ f.getName() + ": " + f.get(obj));
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static Player getUUIDPlayer(String UUID) {
         if( UUID == null ){
             return null;

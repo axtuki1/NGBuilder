@@ -1,6 +1,7 @@
 package io.github.axtuki1.ngbuilder.util;
 
 import io.github.axtuki1.ngbuilder.NGBuilder;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -108,5 +109,10 @@ public class Config {
     public List<String> getStringList(String path) {
         reloadConfig();
         return getConfig().getStringList(path);
+    }
+
+    public ConfigurationSection getConfigurationSection(String path) {
+        reloadConfig();
+        return getConfig().getConfigurationSection(path);
     }
 }
